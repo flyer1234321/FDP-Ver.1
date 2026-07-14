@@ -1,198 +1,121 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-<script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('fdpTheme')||'blue')}catch(e){document.documentElement.setAttribute('data-theme','blue')}</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="FDP">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#F2F4F7">
+<meta name="theme-color" content="#0E1B17">
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxODAiIGhlaWdodD0iMTgwIj48cmVjdCB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgcng9IjQwIiBmaWxsPSIjMEUxQjE3Ii8+PHRleHQgeD0iOTAiIHk9IjEwNSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iI0U4QTMzRCIgZm9udC1mYW1pbHk9InN5c3RlbS11aSIgZm9udC13ZWlnaHQ9IjcwMCIgZm9udC1zaXplPSI1NiI+RkRQPC90ZXh0Pjwvc3ZnPg==">
 <title>FDP-räknare</title>
 <style>
-/* ── Design tokens ─────────────────────────────────────────────────────
-   Cockpit-at-night instrument plate: deep charcoal-green base, warm
-   brass/gold bezel accent, mono readouts for numbers (like a flight
-   computer), tracked uppercase caps for placards/labels. */
-:root{
-  --bg:#0A1410;--bg-top:#122019;
-  --surface:rgba(19,32,26,.68);--surface-solid:#132018;--surface-2:#182720;--surface-3:#1E3128;
-  --edge:rgba(233,228,222,.07);--edge-2:rgba(233,228,222,.12);--edge-gold:rgba(var(--accent-rgb),.35);
-  --gold:#D4A24C;--gold-bright:#F2C876;--gold-dim:#8A6C34;
-  --accent-rgb:212,162,76;--on-accent:#1A1208;
-  --green:#6FBF8B;--green-dim:rgba(111,191,139,.14);
-  --amber:#E0A93E;--amber-dim:rgba(224,169,62,.14);
-  --red:#E2685A;--red-dim:rgba(226,104,90,.14);
-  --text-1:#EDEAE0;--text-2:#93A89A;--text-3:#587065;
-  --r-lg:22px;--r-md:16px;--r-sm:11px;
-  --shadow:0 14px 40px rgba(0,0,0,.38);
-  --mono:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
-  --sans:-apple-system,system-ui,'Segoe UI',sans-serif;
-  --select-arrow:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23D4A24C' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");
-  --hero-ok-title:#D6EFDD;--hero-fail-title:#F6D3CC;
-}
-/* SAS-inspired scheme: light agenda-app look — white/pale-gray background, near-black
-   text, SAS royal blue accent. Status colors (green/amber/red) stay universal. */
-[data-theme="blue"]{
-  --bg:#F2F4F7;--bg-top:#FFFFFF;
-  --surface:rgba(255,255,255,.92);--surface-solid:#FFFFFF;--surface-2:#EEF1F6;--surface-3:#E3E8F0;
-  --edge:rgba(20,40,80,.09);--edge-2:rgba(20,40,80,.14);--edge-gold:rgba(47,93,168,.4);
-  --gold:#2F5DA8;--gold-bright:#1E4488;--gold-dim:#AFC6E8;
-  --accent-rgb:47,93,168;--on-accent:#FFFFFF;
-  --text-1:#141C29;--text-2:#5B6B80;--text-3:#8493A6;
-  --shadow:0 8px 28px rgba(20,40,80,.10);
-  --select-arrow:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%232F5DA8' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");
-  --hero-ok-title:#1B6B3A;--hero-fail-title:#A8342A;
-}
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html{background:var(--bg)}
-body{font-family:var(--sans);background:
-    radial-gradient(ellipse 120% 50% at 50% -8%, var(--bg-top) 0%, transparent 60%),
-    radial-gradient(ellipse 90% 40% at 85% 100%, rgba(var(--accent-rgb),.05) 0%, transparent 55%),
-    var(--bg);
-  color:var(--text-1);
-  padding:env(safe-area-inset-top,20px) 18px calc(env(safe-area-inset-bottom,20px) + 40px);
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;background:radial-gradient(circle at top center, #13241e 0%, #0E1B17 100%);color:#E9E4D6;
+  padding:env(safe-area-inset-top,20px) 24px calc(env(safe-area-inset-bottom,20px)+40px);
   -webkit-text-size-adjust:100%;min-height:100vh}
 .wrap{max-width:480px;margin:0 auto}
-@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.card,.hero,.gauge-card{animation:rise .32s cubic-bezier(.16,1,.3,1) both}
-
-/* ── Header / brand plate ── */
-.hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;padding-top:14px}
-.brand{display:flex;align-items:center;gap:12px}
-.brand-mark{width:44px;height:44px;border-radius:12px;background:linear-gradient(155deg,var(--surface-3),var(--surface-solid));border:1px solid var(--edge-gold);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:700;font-size:13px;color:var(--gold-bright);letter-spacing:.02em;box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 4px 14px rgba(0,0,0,.3)}
-h1{font-size:19px;font-weight:700;color:var(--text-1);letter-spacing:-.01em}
-.ref{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--text-3);text-transform:uppercase;margin-top:2px}
-.lang-btn{background:var(--surface-2);border:1px solid var(--edge-2);border-radius:10px;padding:9px 13px;color:var(--gold);font-size:12px;font-weight:700;cursor:pointer;font-family:var(--mono);min-height:38px;transition:transform .15s ease,border-color .15s ease}
-.lang-btn:active{transform:scale(.92);border-color:var(--edge-gold)}
-
-/* ── Segmented tabs ── */
-.tabs-wrap{position:sticky;top:0;z-index:20;padding:6px 0 14px;background:linear-gradient(var(--bg) 60%,transparent);margin:0 -18px;padding-left:18px;padding-right:18px}
-.tabs{display:flex;gap:3px;background:var(--surface-2);border:1px solid var(--edge-2);border-radius:14px;padding:4px;box-shadow:inset 0 1px 3px rgba(0,0,0,.25)}
-.tab{flex:1;background:transparent;color:var(--text-2);border:none;border-radius:11px;padding:12px 8px;font-size:14px;font-weight:600;cursor:pointer;text-align:center;transition:all .2s ease;font-family:var(--sans)}
-.tab.on{background:linear-gradient(155deg,var(--gold-bright),var(--gold));color:var(--on-accent);box-shadow:0 3px 10px rgba(var(--accent-rgb),.25)}
-.subtabs{display:flex;gap:8px;margin-bottom:14px}
-.subtab{flex:1;background:var(--surface-2);border:1px solid var(--edge-2);color:var(--text-2);border-radius:10px;padding:10px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s ease}
-.subtab.on{background:var(--surface-3);color:var(--gold-bright);border-color:var(--edge-gold)}
-
-/* ── Glass cards ── */
-.card{background:linear-gradient(160deg,rgba(255,255,255,.03),rgba(255,255,255,0) 40%),var(--surface);border:1px solid var(--edge);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);box-shadow:var(--shadow);border-radius:var(--r-lg);padding:22px;margin-bottom:16px;display:flex;flex-direction:column;gap:24px}
-.card-title{font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;color:var(--text-3);text-transform:uppercase;display:flex;align-items:center;justify-content:space-between}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.row>*{min-width:0;max-width:100%}
-.fl{font-size:12.5px;color:var(--text-2);margin-bottom:8px;font-weight:500;display:flex;align-items:center}
-
-/* ── Inputs ── */
-input[type="time"],input[type="number"],select{background:var(--surface-2);border:1px solid var(--edge-2);color:var(--text-1);border-radius:var(--r-sm);padding:14px 15px;font-family:var(--mono);font-size:16px;width:100%;min-width:0;max-width:100%;box-sizing:border-box;min-height:52px;-webkit-appearance:none;appearance:none;display:block;transition:border-color .18s ease,box-shadow .18s ease,background .18s ease}
-input:focus,select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(var(--accent-rgb),.18);background:var(--surface-3)}
-select{-webkit-appearance:none;appearance:none;background-image:var(--select-arrow);background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
-
-/* ── Toggles ── */
-.tgl{display:flex;align-items:center;gap:13px;cursor:pointer;user-select:none;min-height:48px}
-.tgl:active .tgl-box{transform:scale(.94)}
-.tgl-box{width:46px;height:27px;border-radius:14px;background:var(--surface-2);border:1px solid var(--edge-2);position:relative;transition:all .22s cubic-bezier(.4,0,.2,1);flex-shrink:0}
-.tgl-box.on{background:linear-gradient(155deg,var(--gold-bright),var(--gold));border-color:transparent;box-shadow:0 0 10px rgba(var(--accent-rgb),.32)}
-.tgl-dot{position:absolute;top:2px;left:2px;width:21px;height:21px;border-radius:50%;background:var(--bg);transition:left .22s cubic-bezier(.4,0,.2,1)}
-.tgl-box.on .tgl-dot{left:21px;background:var(--on-accent)}
-.tgl-label{font-size:14px;color:var(--text-2);transition:color .18s ease;line-height:1.35}
-.tgl-box.on + .tgl-label{color:var(--text-1)}
-
-/* ── Info hint chips ── */
-.info-i{display:inline-flex;width:17px;height:17px;border:1px solid var(--text-3);border-radius:50%;color:var(--text-2);font-size:10px;align-items:center;justify-content:center;margin-left:7px;cursor:pointer;font-family:var(--mono);flex-shrink:0;user-select:none;transition:all .18s ease}
-.info-i.on{border-color:var(--gold);color:var(--gold);transform:scale(1.12)}
-.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,16px) + 16px);transform:translateX(-50%);background:var(--surface-solid);border:1px solid var(--edge-gold);color:var(--text-1);border-radius:14px;padding:13px 18px;font-size:13.5px;font-weight:600;box-shadow:var(--shadow);cursor:pointer;z-index:50;max-width:calc(100vw - 36px);text-align:center;animation:rise .3s ease both}
-.ver{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;color:var(--text-3);opacity:.7;margin-top:10px}
-.hint-box{font-size:12.5px;color:var(--text-2);line-height:1.55;margin-top:0;max-height:0;opacity:0;overflow:hidden;padding:0 13px;border-left:2px solid var(--gold);border-radius:0 var(--r-sm) var(--r-sm) 0;background:rgba(var(--accent-rgb),.055);transition:max-height .35s cubic-bezier(.4,0,.2,1),opacity .3s ease,padding .3s ease,margin-top .3s ease}
-.hint-box.open{max-height:420px;opacity:1;padding:10px 13px;margin-top:9px;overflow-y:auto}
-
-/* ── Accordion (progressive disclosure) ── */
-.accbtn{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:2px 0;user-select:none}
-.accbtn-txt{display:flex;flex-direction:column;gap:3px}
-.accbtn-title{font-size:14px;font-weight:600;color:var(--text-1);display:flex;align-items:center;gap:8px}
-.accbtn-dot{width:6px;height:6px;border-radius:50%;background:var(--gold)}
-.accbtn-sub{font-size:11.5px;color:var(--text-3)}
-.chev{width:22px;height:22px;border-radius:7px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;transition:transform .25s ease;flex-shrink:0}
-.chev.open{transform:rotate(180deg)}
-.chev svg{width:10px;height:10px}
-.acc-body{display:flex;flex-direction:column;gap:22px;max-height:0;opacity:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1),opacity .3s ease,margin-top .4s ease}
-.acc-body.open{max-height:900px;opacity:1;margin-top:22px}
-
-/* ── Hero verdict ── */
-.hero{border-radius:var(--r-lg);padding:26px 24px;margin-bottom:16px;text-align:center;border:1px solid;position:relative;overflow:hidden;box-shadow:var(--shadow)}
-.hero.ok{background:linear-gradient(165deg,rgba(111,191,139,.14),var(--surface));border-color:rgba(111,191,139,.35)}
-.hero.fail{background:linear-gradient(165deg,rgba(226,104,90,.16),var(--surface));border-color:rgba(226,104,90,.4)}
-.hero-icon{width:52px;height:52px;border-radius:50%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:24px}
-.hero.ok .hero-icon{background:var(--green-dim);color:var(--green);box-shadow:0 0 22px rgba(111,191,139,.28)}
-.hero.fail .hero-icon{background:var(--red-dim);color:var(--red);box-shadow:0 0 22px rgba(226,104,90,.28)}
-.hero-title{font-size:21px;font-weight:800;letter-spacing:-.01em}
-.hero.ok .hero-title{color:var(--hero-ok-title)}
-.hero.fail .hero-title{color:var(--hero-fail-title)}
-.hero-sub{font-size:13px;color:var(--text-2);margin-top:7px;line-height:1.5}
-
-/* ── Gauge (signature instrument) ── */
-.gauge-card{display:flex;flex-direction:column;align-items:center;gap:2px;padding:24px 20px 20px}
-.gauge-readout{font-family:var(--mono);font-weight:700;letter-spacing:-.01em}
-.gauge-lbl{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--text-3);text-transform:uppercase}
-.gauge-status{font-size:12px;font-weight:700;letter-spacing:.04em;margin-top:2px}
-
-/* ── Stat grid ── */
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:16px}
-.stat{background:linear-gradient(160deg,var(--surface-3),var(--surface-solid));border:1px solid var(--edge-2);border-radius:var(--r-md);padding:16px 17px;transition:border-color .2s ease}
-.stat.bad{border-color:rgba(226,104,90,.4)}
-.stat.warn{border-color:rgba(224,169,62,.4)}
-.stat-lbl{font-size:11.5px;color:var(--text-2);margin-bottom:7px;display:flex;justify-content:space-between;align-items:center}
-.stat-val{font-family:var(--mono);font-size:21px;font-weight:700;color:var(--text-1)}
-.stat-val.accent{color:var(--gold-bright)}
-.stat-val.bad{color:var(--red)}
-.stat-val.warn{color:var(--amber)}
-.stat-sub{font-size:10.5px;color:var(--text-3);margin-top:4px}
-.stat-sub.bad{color:var(--red)}
-.stat-sub.warn{color:var(--amber)}
-
-/* ── Badges / disruptive panel ── */
-.badge{background:var(--surface);border:1px solid var(--edge-2);border-radius:var(--r-md);padding:16px 18px;margin-bottom:14px;font-size:13.5px;color:var(--text-2);display:flex;align-items:center;gap:14px}
-.badge-code{font-family:var(--mono);font-weight:800;font-size:17px;flex-shrink:0;width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;background:var(--surface-2)}
-.badge-sub{font-size:11.5px;color:var(--text-3);margin-top:4px}
-.disrupt{background:var(--surface);border:1px solid var(--edge-2);border-radius:var(--r-md);padding:17px 18px;margin-bottom:14px;font-size:13px;color:var(--text-2)}
-.disrupt-title{font-family:var(--mono);font-size:10px;color:var(--text-3);letter-spacing:.1em;margin-bottom:11px;text-transform:uppercase}
-.disrupt-info{font-size:12px;color:var(--text-2);margin-top:9px;line-height:1.5}
-.tag{font-size:11.5px;padding:6px 11px;border-radius:8px;display:inline-block;margin:3px 7px 3px 0;font-weight:600}
-.tag.on{background:var(--amber-dim);color:var(--amber)}
-.tag.off{background:var(--surface-2);color:var(--text-3)}
-.note{font-size:11.5px;color:var(--text-3);margin-top:2px;line-height:1.6;padding:0 4px}
-.disclaimer{margin-top:24px;padding:14px 16px;border-top:1px solid var(--edge-2);font-size:11px;color:var(--text-3);line-height:1.6}
-.disclaimer-title{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--text-3);text-transform:uppercase;margin-bottom:6px;opacity:.8}
-.sep{height:1px;background:var(--edge-2);margin:2px 0}
-
-/* ── Timeline ── */
-.tl-bar{position:absolute;top:22px;left:0;right:0;height:9px;background:var(--surface-2);border-radius:5px;overflow:hidden;border:1px solid var(--edge-2)}
+h1{font-size:24px;font-weight:700;color:#F4EFE3}
+.ref{font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.12em;color:#5C7A6A;text-transform:uppercase;margin-bottom:6px}
+.hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;padding-top:16px}
+.lang-btn{background:#1C2F26;border:1px solid #2C463C;border-radius:8px;padding:8px 14px;color:#E8A33D;font-size:13px;font-weight:700;cursor:pointer;font-family:ui-monospace,monospace;margin-top:4px;min-height:40px;transition:all 0.2s ease}
+.lang-btn:active{transform:scale(0.95)}
+.tabs-wrap{position:sticky;top:0;z-index:10;padding:8px 0 16px 0;background:rgba(14, 27, 23, 0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);margin:0 -24px;padding-left:24px;padding-right:24px}
+.tabs{display:flex;gap:3px;background:#16261F;border:1px solid rgba(44,70,60,0.6);border-radius:12px;padding:5px;box-shadow:0 4px 12px rgba(0,0,0,0.15)}
+.tab{flex:1;background:transparent;color:#9DB5A8;border:none;border-radius:9px;padding:13px 10px;font-size:15px;font-weight:600;cursor:pointer;text-align:center;transition:all 0.25s ease}
+.tab.on{background:#E8A33D;color:#1A1208;box-shadow:0 2px 8px rgba(232,163,61,0.2)}
+.card{background:#16261F;border:1px solid rgba(44,70,60,0.6);box-shadow:0 8px 32px rgba(0,0,0,0.2);border-radius:16px;padding:24px;margin-bottom:24px;display:flex;flex-direction:column;gap:28px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.fl{font-size:12px;color:#7FA98C;margin-bottom:8px}
+input[type="time"],input[type="number"],select{background:#1C2F26;border:1px solid #2C463C;color:#E9E4D6;border-radius:10px;padding:14px 16px;font-family:ui-monospace,monospace;font-size:17px;width:100%;min-width:0;box-sizing:border-box;max-width:100%;min-height:52px;transition:border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease}
+input:focus,select:focus{outline:none;border-color:#7FA98C;box-shadow:0 0 0 3px rgba(127,169,140,0.2);background:#1e332a}
+select{font-size:16px;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237FA98C' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+.tgl{display:flex;align-items:center;gap:14px;cursor:pointer;user-select:none;min-height:52px}
+.tgl:active .tgl-box{transform:scale(0.95)}
+.tgl-box{width:48px;height:28px;border-radius:14px;background:#2C463C;position:relative;transition:all 0.25s cubic-bezier(0.4, 0, 0.2, 1);flex-shrink:0}
+.tgl-box.on{background:#E8A33D;box-shadow:0 0 8px rgba(232,163,61,0.3)}
+.tgl-dot{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#0E1B17;transition:left 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s}
+.tgl-box.on .tgl-dot{left:23px}
+.tgl-label{font-size:14px;color:#C9D9CE;transition:color 0.2s ease}
+.tgl-box.on + .tgl-label{color:#F4EFE3}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+.stat{background:linear-gradient(145deg, #182a22, #14221b);box-shadow:0 4px 12px rgba(0,0,0,0.1);border:1px solid rgba(44,70,60,0.4);border-radius:12px;padding:18px 20px;transition:transform 0.2s ease}
+.stat.bad{border-color:#A8493A;background:linear-gradient(145deg, rgba(168,73,58,0.1), rgba(20,34,27,1))}
+.stat-lbl{font-size:12px;color:#7FA98C;margin-bottom:6px}
+.stat-val{font-family:ui-monospace,monospace;font-size:22px;font-weight:700;color:#F4EFE3}
+.stat-val.accent{color:#E8A33D}
+.stat-val.bad{color:#E89280}
+.stat-sub{font-size:11px;color:#5C7A6A;margin-top:4px}
+.stat-sub.bad{color:#D9624A}
+.verdict{border-radius:14px;padding:20px 22px;display:flex;align-items:center;gap:16px;margin-bottom:24px;box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+.verdict.ok{background:rgba(127,169,140,.12);border:1px solid rgba(74,107,87,0.6)}
+.verdict.fail{background:rgba(217,98,74,.12);border:1px solid rgba(168,73,58,0.6)}
+.verdict-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.verdict.ok .verdict-dot{background:#7FA98C;box-shadow:0 0 8px rgba(127,169,140,0.4)}
+.verdict.fail .verdict-dot{background:#D9624A;box-shadow:0 0 8px rgba(217,98,74,0.4)}
+.verdict-title{font-weight:600;font-size:15px}
+.verdict.ok .verdict-title{color:#C9E0D0}
+.verdict.fail .verdict-title{color:#F0C4B9}
+.verdict-sub{font-size:12px;color:#9DB5A8;margin-top:4px}
+.note{font-size:12px;color:#4A6356;margin-top:16px;line-height:1.6}
+.hint{font-size:12px;color:#5C7A6A;line-height:1.5;max-height:0;opacity:0;overflow:hidden;transition:max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease, margin-top 0.4s ease}
+.hint.open{max-height:250px;opacity:1;margin-top:10px}
+.tag{font-size:12px;padding:5px 10px;border-radius:8px;display:inline-block;margin:4px 8px 4px 0}
+.tag.on{background:rgba(232,163,61,.2);color:#E8A33D;font-weight:600}
+.tag.off{background:rgba(44,70,60,.3);color:#5C7A6A}
+.badge{background:rgba(127,169,140,.08);border:1px solid #2C463C;border-radius:12px;padding:16px 20px;margin-bottom:20px;font-size:14px;color:#9DB5A8}
+.badge-code{font-family:ui-monospace,monospace;font-weight:700;font-size:18px;margin-right:10px}
+.badge-sub{font-size:12px;color:#5C7A6A;margin-top:6px}
+.disrupt{background:rgba(232,163,61,.08);border:1px solid #2C463C;border-radius:12px;padding:16px 20px;margin-bottom:20px;font-size:13px;color:#C9D9CE}
+.disrupt-title{font-family:ui-monospace,monospace;font-size:10px;color:#5C7A6A;letter-spacing:.08em;margin-bottom:8px}
+.disrupt-info{font-size:12px;color:#7FA98C;margin-top:6px}
+.sep{height:1px;background:#2C463C;margin:20px 0}
+.tl-bar{position:absolute;top:22px;left:0;right:0;height:10px;background:#0E1B17;border-radius:5px;overflow:hidden}
 .tl-seg{position:absolute;top:0;bottom:0}
 .tl-mk{position:absolute;top:0;text-align:center;transform:translateX(-50%)}
-.tl-mk.cl-l .tl-mk-time,.tl-mk.cl-l .tl-mk-label{position:absolute;right:7px;white-space:nowrap;text-align:right}
-.tl-mk.cl-l .tl-mk-time{top:36px}
-.tl-mk.cl-l .tl-mk-label{top:52px}
-.tl-mk.cl-r .tl-mk-time,.tl-mk.cl-r .tl-mk-label{position:absolute;left:7px;white-space:nowrap;text-align:left}
-.tl-mk.cl-r .tl-mk-time{top:36px}
-.tl-mk.cl-r .tl-mk-label{top:52px}
-.tl-mk-line{width:2px;height:32px;margin:0 auto;border-radius:1px}
-.tl-mk-time{font-size:10px;margin-top:4px;font-family:var(--mono);white-space:nowrap;font-weight:600}
-.tl-mk-label{font-size:8.5px;color:var(--text-3);white-space:nowrap;text-transform:uppercase;letter-spacing:.04em}
+.tl-mk-line{width:2px;height:32px;margin:0 auto}
+.tl-mk-time{font-size:10px;margin-top:3px;font-family:ui-monospace,monospace;white-space:nowrap}
+.tl-mk-label{font-size:9px;color:#5C7A6A;white-space:nowrap}
 .hidden{display:none}
+.info-i{display:inline-flex;width:18px;height:18px;border:1px solid #5C7A6A;border-radius:50%;color:#7FA98C;font-size:11px;align-items:center;justify-content:center;margin-left:8px;cursor:pointer;font-family:ui-monospace,monospace;flex-shrink:0;user-select:none}
+.hint-box{font-size:12px;color:#9DB5A8;line-height:1.5;margin-top:6px;padding:8px 12px;background:rgba(127,169,140,.07);border-left:2px solid #E8A33D;border-radius:0 8px 8px 0;display:none}
 
 @media(max-width:500px){
-  body{padding:env(safe-area-inset-top,18px) 14px calc(env(safe-area-inset-bottom,18px) + 34px)}
-  .card{padding:19px 16px;border-radius:18px;gap:22px}
-  .row{grid-template-columns:1fr;gap:18px}
-  input[type="time"],input[type="number"],select{padding:15px;font-size:17px;min-height:54px;text-align:center}
-  select{text-align:left;text-align-last:center}
-  .grid{grid-template-columns:1fr;gap:12px}
-  .hero{padding:24px 20px}
-  .hero-title{font-size:20px}
+  body{padding:env(safe-area-inset-top,20px) 16px calc(env(safe-area-inset-bottom,20px)+32px)}
+  .hdr{margin-bottom:28px;padding-top:12px}
+  .tabs{margin-bottom:28px;padding:5px}
+  .tab{padding:14px 8px;font-size:15px}
+  .card{padding:20px 16px;margin-bottom:28px;gap:24px;border-radius:14px}
+  .row{grid-template-columns:1fr;gap:20px}
+  .row>*{width:100%;min-width:0}
+  .fl{font-size:13px;margin-bottom:8px;font-weight:500}
+  input[type="time"],input[type="number"],select{padding:16px;font-size:18px;min-height:56px;border-radius:12px;text-align:center;width:100%;max-width:100%;min-width:0;display:block;box-sizing:border-box;-webkit-appearance:none;appearance:none}
+  select{font-size:17px;text-align:left;text-align-last:center;padding-left:16px;padding-right:36px}
+  .grid{grid-template-columns:1fr;gap:16px;margin-bottom:28px}
+  .stat{padding:20px;border-radius:14px}
+  .stat-lbl{font-size:13px;margin-bottom:6px}
+  .stat-val{font-size:26px}
+  .stat-sub{font-size:12px;margin-top:6px}
+  .verdict{padding:20px;margin-bottom:28px;border-radius:14px;gap:16px}
+  .verdict-title{font-size:16px}
+  .verdict-sub{font-size:13px}
+  .note{font-size:13px;margin-top:20px;line-height:1.7}
+  .badge{padding:18px 20px;margin-bottom:24px;font-size:15px;border-radius:14px}
+  .badge-code{font-size:20px}
+  .disrupt{padding:18px 20px;margin-bottom:24px;border-radius:14px;font-size:14px}
+  .disrupt-title{font-size:11px;margin-bottom:10px}
+  .disrupt-info{font-size:13px;margin-top:8px}
+  .sep{margin:24px 0}
+  .tgl{min-height:56px;gap:16px}
+  .tgl-label{font-size:15px}
+  .tag{font-size:13px;padding:6px 12px;margin:5px 10px 5px 0;border-radius:8px}
+  .hint{font-size:13px;margin-top:8px;line-height:1.6}
+  .hint-box{font-size:13px;padding:12px 16px}
 }
-@media(min-width:480px){.wrap{padding-top:16px}}
+@media(max-width:360px){.row{grid-template-columns:1fr;gap:12px}}
+@media(min-width:480px){.wrap{padding-top:20px}}
 </style>
 </head>
 <body>
@@ -200,24 +123,15 @@ select{-webkit-appearance:none;appearance:none;background-image:var(--select-arr
 
 <script>
 "use strict";
-const APP_VERSION='14';
-// Hint-boxarnas öppet-tillstånd överlever render(): id härleds ur hint-texten (hash) +
-// förekomstindex, så samma ruta får samma id varje render och kan återöppnas ur HINTS.
-let _hcount={};
-const HINTS=new Set();
-function hintId(txt){let h=0;for(let i=0;i<txt.length;i++)h=(h*31+txt.charCodeAt(i))>>>0;const k=h.toString(36);_hcount[k]=(_hcount[k]||0)+1;return'h'+k+(_hcount[k]>1?'_'+_hcount[k]:'')}
-function hintBtn(hid){return'<span class="info-i'+(HINTS.has(hid)?' on':'')+'" onclick="event.stopPropagation();togHint(\''+hid+'\',this)">i</span>'}
-function hintBox(hid,txt){return'<div class="hint-box'+(HINTS.has(hid)?' open':'')+'" id="'+hid+'">'+txt+'</div>'}
-window.togHint=function(id,el){const h=document.getElementById(id);if(!h)return;h.classList.toggle('open');const open=h.classList.contains('open');el.classList.toggle('on',open);if(open)HINTS.add(id);else HINTS.delete(id)};
-window.togAcc=function(key){ACC[key]=!ACC[key];render()};
-
+let _hid=0;
+window.togHint=function(id,el){const h=document.getElementById(id);h.classList.toggle('open');const open=h.classList.contains('open');el.style.borderColor=open?'#E8A33D':'#5C7A6A';el.style.color=open?'#E8A33D':'#7FA98C';el.style.transform=open?'scale(1.1)':'scale(1)';el.style.transition='all 0.2s ease'};
 // ─── i18n ───────────────────────────────────────────────────────────────
-const L={sv:{title:"FDP-räknare",ref:"ORO.FTL · CS FTL.1",tabStandby:"Standby",tabNormal:"Vanlig tjänst.",sbyTypeLabel:"Typ av standby",sbyOther:"Annan standby (hemma)",sbyAirport:"Flygplatsstandby (ASB)",sbyStart:"SBY start",sbyEnd:"SBY slut",called:"Utkallad (kontaktad)",reportIn:"Incheckning",reportInHint:"Ange i REFERENSTID — tidszonen du är acklimatiserad till (oftast hemmabasens lokala tid), inte lokal tid där du fysiskt är (GM1 ORO.FTL.205(b)(1)).",reportOut:"Utcheckning",reportOutHint:"Samma referenstid som incheckningen — INTE lokal tid på destinationen. Appen tar bara skillnaden mellan klockslagen rakt av, så byter destinationen tidszon måste du själv räkna om tiden innan du skriver in den.",sectors:"Sektorer",augLabel:"Augmented (höjer tröskel till 8h)",splitLabel:"Split duty (höjer tröskel till 8h)",sbyBeforeOther:"Standby-tid",sbyBeforeASB:"ASB före FDP",reduction:"FDP-avdrag",nightCreditSub:"nattkredit",noNightCredit:"ingen nattkredit",asbReduces:">4h reducerar",baseFDP:"Max FDP",redLimit:"Din FDP-gräns",afterReduction:"efter standby-avdrag",actualFDP:"Din FDP",ok:"OK",over:"ÖVER",awakeTime:"Tid vaken",asbCombined:"ASB+FDP komb.",within:"inom max",dutyCred:"Loggad tjänstetid",asbFullDuty:"ASB = full duty",sby25:"25% av SBY till report",sby25full:"25% av hela SBY",withinLimits:"Inom gräns",overLimit:"ÖVER gräns",sbyVerdictOk:"Lagligt",fdpOverLimit:"FDP över gräns",awakeOverMax:"Vaken tid över max (OM-A)",sbyOver16:"SBY över 16h",asbOverMax:"ASB över 12h (OM-A) eller komb. över 16h",respTooShort:"Under 60 min mellan utkallelse och report (OM-A)",breaksLimit:"Ej lagligt",sbySource:"Källa: ORO.FTL.225, CS FTL.1.225, ORO.FTL.205(b)(1) Table 2.",tzLabel:"Tidsskillnad destination (h)",tzHint:"Största tidsskillnaden mot din hemmabas under rotationen, i timmar (0–12). Ex: Norden/Europa ≈0–1h, Kanarieöarna/Island ≈1–2h, Turkiet ≈2–3h, östkust USA ≈5–6h, västkust USA ≈8–9h, Asien ≈6–9h+. Vid 0–3h påverkas varken FDP-gräns eller vilokrav.",rotLabel:"Tid sedan avresa hemifrån",rotToday:"Idag (första passet)",rot12:"Ca 12h",rot24:"Ca 1 dygn",rot36:"Ca 1,5 dygn",rot48:"Ca 2 dygn",rot60:"Ca 2,5 dygn",rot72:"Ca 3 dygn",rot96:"Ca 4 dygn",rot120:"5+ dygn",rotHint:"Hur länge sedan du lämnade hemmabasens tidszon. Avgör om du räknas som acklimatiserad (B), i övergång (X) eller omställd till nya platsen (D). Vid 0–1h tidsskillnad spelar detta ingen roll.",restBefore:"Vila innan (h)",restAfter:"Vila efter (h)",awayToggle:"Vila borta från hemmabas",ifrLabel:"In-flight rest — klass",ifrHint:"Vilfacilitetens kvalitet ombord vid förstärkt besättning (max 3 sektorer). Klass 1 = vilhytt (bäst), Klass 2 = avskild lutbar sits, Klass 3 = sits i kabinen (minst). Bättre klass ger längre tillåten FDP.",ifrC3:"Klass 3 – sits i kabin",ifrC2:"Klass 2 – lutbar sits",ifrC1:"Klass 1 – vilhytt",ifrNone:"Ingen",extraCrew:"Extra besättning",splitDutyLabel:"Split duty",breakLabel:"Rast (h, min 3h)",appliedLimit:"Din FDP-gräns",restBeforeLabel:"Vila innan",underMin:"UNDER",acclimB:"Acklimatiserad till referenstid",acclimD:"Acklimatiserad till ny plats",acclimX:"Okänt acklimatiseringstillstånd",acclimBadge:"inom 2h-bandet",disruptiveTitle:"Disruptive schedule · lokal natt",disruptiveHint:"Visar om DETTA pass (incheckning→utcheckning) ligger i kroppens känsligaste tider. Early start = incheckning 05:00–05:59. Late finish = utcheckning 23:00–01:59. Night duty = passet överlappar 02:00–05:00. Om någon tagg lyser räknas passet som disruptive — 4+ i följd kräver 60h extended recovery (CS FTL.1.235(a)).",earlyStart:"Early start (05–06)",lateFinish:"Late finish (23–02)",nightDuty:"Night duty (02–05)",localNights:"Lokala nätter i vila",localNightsHint:"Antal HELA lokala nätter (fönstret 22:00–06:00) som ryms helt inuti din efterföljande vila. Kort vila, eller vila som inte täcker ett helt sådant fönster, ger 0 — även om du faktiskt sover under natten.",disruptiveWarn:"Disruptive — kontrollera lokala nätter (CS FTL.1.235(a)). 4+ disruptive → 60h extended recovery.",notDisruptive:"Ej disruptive schedule.",longSectorLabel:"Lång sektor (1 sektor >9h flygtid)",longSectorHint:"Ger +1h på in-flight rest-gränsen om ETT av sektorerna har mer än 9h sammanhängande flygtid, och du har max 2 sektorer totalt (CS FTL.1.205(c)(4)).",longSectorSuffix:"1h lång sektor",destRestLabel:"Vila på destination (14h-regel)",destRestHint:"Gäller i två fall som delar samma krav — vila på destination ska vara minst lika lång som passet du precis flög, eller 14h (det som är störst): (1) efter en in-flight rest-förlängd FDP (CS FTL.1.205(c)(6)), eller (2) borta från hemmabas vid ≥4h tidsskillnad (CS FTL.1.235(b)(3)(ii)). Strängare än standardvilan 10–12h.",destRestUnderMin:"UNDER kravet",destRestOverMin:"OK",destRestOverLimit:"Vila på destination under kravet (14h-regeln)",tzHomeOk:"Uppfyller kravet på lokala nätter för tidszon",tzHomeFail:"För få lokala nätter för tidszonsskillnaden (CS FTL.1.235(b)(3)(i))",nextEarlyLabel:"Nästa pass är early start (05–06) vid hemmabas",nextEarlyHint:"Om DETTA pass var late finish eller night duty, och nästa pass börjar som early start vid hemmabasen, måste vilan mellan de två passen innehålla minst 1 lokal natt (CS FTL.1.235(a)(1)).",transitionOk:"Uppfyller kravet på 1 lokal natt vid övergång",transitionFail:"Övergång sen/natt → early start kräver minst 1 lokal natt i vilan (CS FTL.1.235(a)(1))",normVerdictOk:"Lagligt",restUnderMin:"Vila under min.",normSource:"Källa: ORO.FTL.205, .105(1), CS FTL.1.205(c), .220, .235.",noExtension:"ingen förlängning",ifrSrc:"In-flight rest",splitSrc:"Split: bas+50% av",hRest:"h rast",extra:"extra",sekt:"sektorer",isCalledLabel:"Utkallad till flygning",notCalledLabel:"Ingen utkallelse (enbart SBY)",sbyFullPeriod:"Hela SBY-perioden",prevDutyLabel:"Föreg. tjänstgöring (h)",prevDutyHint:"Vila måste vara ≥ föreg. duty (ORO.FTL.235).",minRestReq:"minst:",extLabel:"Planerad förlängning (E1, +1h utan in-flight rest)",cdLabel:"Commander's discretion (max +2h, +3h förstärkt)",extSrc:"Förlängning (CS FTL.1.205(b))",extNotAllowed:"Förlängning ej tillåten för denna starttid/sektorantal, eller kombinerad med split/in-flight rest.",calledHint:"Av = ingen utkallelse skedde. Då beräknas endast duty-kredit (25% av hela SBY-perioden).",augHint:"Slå på om FDP:n efter utkallelsen flygs med förstärkt besättning och in-flight rest — tröskeln höjs från 6h till 8h (CS FTL.1.225(b)(8)).",sbySplitHint:"Slå på om FDP:n efter utkallelsen är en split duty — tröskeln höjs från 6h till 8h (CS FTL.1.225(b)(8)).",asbSplitLabel:"Utkallad från ASB till split duty",asbSplitHint:"Om du blir utkallad från flygplatsstandby för att flyga en split duty räknas FDP:n från standbyns incheckning (inte från flygpassets), och löper ända till slutet av split duty-passet. Ingen standby-reduktion görs — istället gäller split duty-förlängningen (bas + 50% av rast, max 6h, ej WOCL) på precis samma sätt som i Vanlig tjänst.",awayHint:"Vila som påbörjas borta från hemmabas: minimikravet är 10h istället för 12h (ORO.FTL.235(b)).",splitHint:"Rast ≥3h på marken förlänger max-FDP med upp till 50% av rasten. Bara de FÖRSTA 6h av rasten räknas, och tid inom WOCL (02:00–05:59) räknas aldrig, oavsett hur lång rasten är (CS FTL.1.220(e)(2)). Rasten räknas i sin helhet som FDP. Kan ej kombineras med E1 eller in-flight rest.",breakStartLabel:"Rastens starttid",breakStartHint:"Används för att räkna ut hur mycket av rasten som faktiskt får tillgodoräknas till FDP-bonusen: max de första 6h, och aldrig tid inom WOCL (02:00–05:59) — även om rasten totalt är längre.",splitCountedSuffix:"tillgodoräknas",extHint:"Planerad i förväg, max +1h, max 2 ggr per 7 dagar. Kräver utökad vila: pre- och postflight +2h, eller postflight +4h. Ej tillåten vid vissa starttider/sektorantal. Kan ej kombineras med split duty eller in-flight rest (CS FTL.1.205(b)).",cdHint:"Endast vid oförutsedda omständigheter som uppstår vid eller efter incheckning — kan aldrig planeras. Vid förstärkt besättning (in-flight rest): +3h. Annars: +2h. Viktigt: om en planerad förlängning (E1) redan använts delar E1 och CD på samma 2h-pott — de läggs INTE på varandra (ORO.FTL.205(f)(1)(i), bekräftat av EASA FAQ). Split duty och in-flight rest räknas däremot in i grunden innan CD, så där får CD läggas ovanpå fullt ut. Efterföljande vila får aldrig understiga 10h. Befälhavaren ska rapportera användningen (ORO.FTL.205(f)).",viewSimple:"Enkel",viewAdvanced:"Avancerad",latestOff:"Senaste utcheckning",latestOffSub:"utan förlängning",simpleNote:"Bas-FDP enligt regelverkets tabell för acklimatiserad besättning (ORO.FTL.205(b)(1)), baserat på incheckningstid i referenstid/lokaltid och antal sektorer. Utan extension, split duty, in-flight rest eller standby-reduktion — växla till Avancerad för dessa.",disclaimerTitle:"Ansvarsfriskrivning",disclaimerText:"Detta verktyg är ett personligt hjälpmedel och ersätter inte operatörens OM-A, gällande flygtidsscheman eller officiell flygplanering. Beräkningarna kan innehålla fel eller sakna fall som operatörens regler täcker. Kontrollera alltid mot OM-A och rådgör med ansvarig personal vid osäkerhet — användning sker på eget ansvar.",themeToggle:"Byt färgschema",tlPlannedMax:"TIMELINE · PLANERAD vs MAX",updateReady:"Ny version installerad — tryck för att ladda om",
-hintSbyToReport:"Hur lång din standby var innan du checkade in. Om den var lång, minskar din max-FDP.",hintReduction:"Antal timmar som dras av från din max-FDP på grund av att du redan haft standby. Om du hade standby på natten minskar avdraget (nattkredit).",hintBaseFDP:"Hur långt du får flyga utan någon standby-reduktion eller förlängning. Baserat på din incheckningstid och antal flygningar.",hintRedLimit:"Den slutgiltiga gränsen för hur långt du faktiskt får flyga det här passet, efter att standby-avdraget har dragits av.",hintActFDP:"Ditt planerade flygpass — tiden från incheckning till utcheckning.",hintAwake:"Total tid du varit vaken sedan standbyn började (minus presumerad sömn om standbyn startade nattetid, fram till du blev utkallad). OBS: EASA har medvetet INTE definierat 'vaken tid' matematiskt — det här är en rimlig uppskattning, inte en officiell formel. Ditt bolags OM-A kan ha en annan tolkning.",hintCombined16h:"Kombinerad tid från flygplatsstandbyns start till utcheckning. Denna gräns (16h) är exakt definierad i regelverket (CS FTL.1.225(a)(2)(ii)/7.9.1(b)(ii)) — till skillnad från 'vaken tid'.",hintDutyCred:"Den tid från din standby som räknas som tjänstetid i din loggbok (25% av standby-tiden, eller hela tiden om flygplatsstandby).",hintAppliedLim:"Din personliga maxgräns för det här passet. Inkluderar eventuell förlängning från split duty, in-flight rest eller commander's discretion.",hintRestBefore:"Kontroll att du vilat tillräckligt: minst 12h hemma (10h borta), och alltid minst lika lång vila som ditt förra pass.",advExtras:"Utökningar & befälsbeslut",advExtrasSub:"In-flight rest, split duty, förlängning, CD",remaining:"Kvar till gräns",pctUsed:"av gränsen",legalLabel:"LAGLIGT",illegalLabel:"EJ LAGLIGT",noneActive:"Inget aktivt — bas-FDP gäller"},
-en:{title:"FDP Calculator",ref:"ORO.FTL · CS FTL.1",tabStandby:"Standby",tabNormal:"Normal duty",sbyTypeLabel:"Standby type",sbyOther:"Other standby (home)",sbyAirport:"Airport standby (ASB)",sbyStart:"SBY start",sbyEnd:"SBY end",called:"Called (contacted)",reportIn:"Report on",reportInHint:"Enter in REFERENCE TIME — the time zone you're acclimatised to (usually home base local time), not the local time where you physically are (GM1 ORO.FTL.205(b)(1)).",reportOut:"Report off",reportOutHint:"Same reference time as report-on — NOT local time at the destination. The app just takes the difference between the clock times, so if the destination is in another time zone, convert it yourself before entering.",sectors:"Sectors",augLabel:"Augmented (threshold → 8h)",splitLabel:"Split duty (threshold → 8h)",sbyBeforeOther:"Standby duration",sbyBeforeASB:"ASB before FDP",reduction:"FDP reduction",nightCreditSub:"night credit",noNightCredit:"no night credit",asbReduces:">4h reduces",baseFDP:"Max FDP",redLimit:"Your FDP limit",afterReduction:"after standby reduction",actualFDP:"Your FDP",ok:"OK",over:"EXCEEDED",awakeTime:"Time awake",asbCombined:"ASB+FDP combined",within:"within max",dutyCred:"Logged duty time",asbFullDuty:"ASB = full duty",sby25:"25% of SBY to report",sby25full:"25% of full SBY",withinLimits:"Within limits",overLimit:"EXCEEDS limit",sbyVerdictOk:"Legal",fdpOverLimit:"FDP exceeds limit",awakeOverMax:"Awake over max (OM-A)",sbyOver16:"SBY over 16h",asbOverMax:"ASB over 12h (OM-A) or combined over 16h",respTooShort:"Less than 60 min call-to-report (OM-A)",breaksLimit:"NOT LEGAL",sbySource:"Source: ORO.FTL.225, CS FTL.1.225, Table 2.",tzLabel:"TZ diff. to destination (h)",tzHint:"Largest time difference from your home base during the rotation, in hours (0–12). Ex: Nordics/Europe ≈0–1h, Canaries/Iceland ≈1–2h, Turkey ≈2–3h, US east coast ≈5–6h, US west coast ≈8–9h, Asia ≈6–9h+. At 0–3h neither the FDP limit nor rest requirements are affected.",rotLabel:"Time since departure from home base",rotToday:"Today (first duty)",rot12:"~12h",rot24:"~1 day",rot36:"~1.5 days",rot48:"~2 days",rot60:"~2.5 days",rot72:"~3 days",rot96:"~4 days",rot120:"5+ days",rotHint:"How long since you left your home base's time zone. Determines whether you're acclimatised (B), in transition (X), or adjusted to the new location (D). At 0–1h TZ difference this has no effect.",restBefore:"Rest before (h)",restAfter:"Rest after (h)",awayToggle:"Rest away from base",ifrLabel:"In-flight rest — class",ifrHint:"Quality of the rest facility with augmented crew (max 3 sectors). Class 1 = separate rest bunk (best), Class 2 = separate reclining seat, Class 3 = cabin seat (least). A better class allows a longer FDP.",ifrC3:"Class 3 – cabin seat",ifrC2:"Class 2 – reclining seat",ifrC1:"Class 1 – rest bunk",ifrNone:"None",extraCrew:"Extra crew",splitDutyLabel:"Split duty",breakLabel:"Break (h, min 3h)",appliedLimit:"Your FDP limit",restBeforeLabel:"Rest before",underMin:"UNDER",acclimB:"Acclimatised to ref. time",acclimD:"Acclimatised to new location",acclimX:"Unknown acclimatisation",acclimBadge:"within 2h band",disruptiveTitle:"Disruptive schedule · local night",disruptiveHint:"Shows whether THIS duty (report→off) falls within the body's most sensitive hours. Early start = report 05:00–05:59. Late finish = off 23:00–01:59. Night duty = the duty overlaps 02:00–05:00. If any tag lights up, the duty counts as disruptive — 4+ in a row require 60h extended recovery (CS FTL.1.235(a)).",earlyStart:"Early start (05–06)",lateFinish:"Late finish (23–02)",nightDuty:"Night duty (02–05)",localNights:"Local nights in rest",localNightsHint:"Number of COMPLETE local nights (the 22:00–06:00 window) that fit entirely inside your subsequent rest. A short rest, or one that doesn't fully cover such a window, shows 0 — even if you do sleep during the night.",disruptiveWarn:"Disruptive — check local nights (CS FTL.1.235(a)). 4+ → 60h extended recovery.",notDisruptive:"Not disruptive.",longSectorLabel:"Long sector (1 sector >9h flight time)",longSectorHint:"Adds +1h to the in-flight rest limit if ONE of the sectors has more than 9h of continuous flight time, with a maximum of 2 sectors total (CS FTL.1.205(c)(4)).",longSectorSuffix:"1h long sector",destRestLabel:"Destination rest (14h rule)",destRestHint:"Applies in two cases that share the same requirement — rest at destination must be at least as long as the duty you just flew, or 14h, whichever is greater: (1) after an in-flight-rest-extended FDP (CS FTL.1.205(c)(6)), or (2) away from home base with ≥4h TZ difference (CS FTL.1.235(b)(3)(ii)). Stricter than the standard 10–12h rest.",destRestUnderMin:"UNDER requirement",destRestOverMin:"OK",destRestOverLimit:"Destination rest below requirement (14h rule)",tzHomeOk:"Meets the local-nights requirement for the time zone difference",tzHomeFail:"Not enough local nights for the time zone difference (CS FTL.1.235(b)(3)(i))",nextEarlyLabel:"Next duty is an early start (05–06) at home base",nextEarlyHint:"If THIS duty was a late finish or night duty, and the next duty starts as an early start at home base, the rest between the two duties must include at least 1 local night (CS FTL.1.235(a)(1)).",transitionOk:"Meets the 1 local night requirement for this transition",transitionFail:"Late/night → early-start transition requires at least 1 local night of rest (CS FTL.1.235(a)(1))",normVerdictOk:"Legal",restUnderMin:"Rest below min.",normSource:"Source: ORO.FTL.205, .105(1), CS FTL.1.205(c), .220, .235.",noExtension:"no extension",ifrSrc:"In-flight rest",splitSrc:"Split: base+50% of",hRest:"h break",extra:"extra",sekt:"sectors",isCalledLabel:"Called to flight duty",notCalledLabel:"No callout (SBY only)",sbyFullPeriod:"Full SBY period",prevDutyLabel:"Prev. duty length (h)",prevDutyHint:"Rest must be ≥ prev. duty (ORO.FTL.235).",minRestReq:"min. required:",extLabel:"Planned extension (E1, +1h without in-flight rest)",cdLabel:"Commander's discretion (max +2h, +3h augmented)",extSrc:"Extension (CS FTL.1.205(b))",extNotAllowed:"Extension not allowed for this start time/sector count, or combined with split/in-flight rest.",calledHint:"Off = no callout occurred. Only duty credit is calculated (25% of the full SBY period).",augHint:"Enable if the FDP after callout is flown with augmented crew and in-flight rest — threshold rises from 6h to 8h (CS FTL.1.225(b)(8)).",sbySplitHint:"Enable if the FDP after callout is a split duty — threshold rises from 6h to 8h (CS FTL.1.225(b)(8)).",asbSplitLabel:"Called off ASB to split duty",asbSplitHint:"If you're called off airport standby to fly a split duty, the FDP counts from the standby's report time (not the flight's), running through to the end of the split duty. No standby reduction is applied — instead the split-duty extension (base + 50% of the break, capped at 6h, WOCL excluded) applies exactly as in Normal Duty.",awayHint:"Rest commencing away from home base: minimum requirement is 10h instead of 12h (ORO.FTL.235(b)).",splitHint:"Ground break ≥3h extends max FDP by up to 50% of the break. Only the FIRST 6h of the break count, and time within WOCL (02:00–05:59) never counts, no matter how long the break is (CS FTL.1.220(e)(2)). The break counts in full as FDP. Cannot be combined with E1 or in-flight rest.",breakStartLabel:"Break start time",breakStartHint:"Used to work out how much of the break actually counts toward the FDP bonus: only the first 6h, and never time within WOCL (02:00–05:59) — even if the break itself is longer.",splitCountedSuffix:"counted",extHint:"Planned in advance, max +1h, max twice per 7 days. Requires increased rest: pre- and post-flight +2h, or post-flight +4h. Not allowed at certain start times/sector counts. Cannot be combined with split duty or in-flight rest (CS FTL.1.205(b)).",cdHint:"Only for unforeseen circumstances arising at or after reporting — can never be planned. With augmented crew (in-flight rest): +3h. Otherwise: +2h. Important: if a planned extension (E1) was already used, E1 and CD share the same 2h envelope — they do NOT stack (ORO.FTL.205(f)(1)(i), confirmed by EASA's own FAQ). Split duty and in-flight rest are already included in the limit before CD, so CD applies fully on top of those. Subsequent rest never below 10h. The commander must report its use (ORO.FTL.205(f)).",viewSimple:"Simple",viewAdvanced:"Advanced",latestOff:"Latest check-out",latestOffSub:"without extension",simpleNote:"Base FDP from the regulation's table for acclimatised crew (ORO.FTL.205(b)(1)), based on check-in at reference/local time and number of sectors. Without extension, split duty, in-flight rest or standby reduction — switch to Advanced for those.",disclaimerTitle:"Disclaimer",disclaimerText:"This tool is a personal aid and does not replace the operator's OM-A, applicable flight time specification scheme, or official flight planning. Calculations may contain errors or miss edge cases covered by the operator's rules. Always verify against the OM-A and consult responsible personnel when in doubt — use at your own risk.",themeToggle:"Switch color scheme",tlPlannedMax:"TIMELINE · PLANNED vs MAX",updateReady:"New version installed — tap to reload",
-hintSbyToReport:"How long your standby was before you checked in. If it was long, your max FDP is reduced.",hintReduction:"Hours subtracted from your max FDP because you already had standby. Night credit reduces this deduction.",hintBaseFDP:"How long you're allowed to fly without any standby reduction or extension. Based on your check-in time and number of sectors.",hintRedLimit:"The final limit on how long you can actually fly this duty, after the standby deduction.",hintActFDP:"Your planned duty — the time from check-in to check-out.",hintAwake:"Total time awake since standby started (minus presumed sleep if standby began at night, up until you were called). NOTE: EASA has deliberately NOT defined 'awake time' mathematically — this is a reasonable estimate, not an official formula. Your operator's OM-A may interpret this differently.",hintDutyCred:"The portion of your standby that counts as duty time in your logbook (25% of standby, or 100% for airport standby).",hintAppliedLim:"Your personal maximum for this duty. Includes any extensions from split duty, in-flight rest, or commander's discretion.",hintRestBefore:"Checks that you rested enough: at least 12h at home (10h away), and never less than your previous duty.",advExtras:"Extensions & discretion",advExtrasSub:"In-flight rest, split duty, extension, CD",remaining:"Remaining to limit",pctUsed:"of limit",legalLabel:"LEGAL",illegalLabel:"NOT LEGAL",noneActive:"None active — base FDP applies"}};
+const L={sv:{title:"FDP-räknare",ref:"ORO.FTL · CS FTL.1",tabStandby:"Standby",tabNormal:"Vanlig tjänst.",sbyTypeLabel:"Typ av standby",sbyOther:"Annan standby (hemma)",sbyAirport:"Flygplatsstandby (ASB)",sbyStart:"SBY start",sbyEnd:"SBY slut",called:"Utkallad (kontaktad)",reportIn:"Incheckning",reportOut:"Utcheckning",sectors:"Sektorer",augLabel:"Augmented (höjer tröskel till 8h)",splitLabel:"Split duty (höjer tröskel till 8h)",sbyBeforeOther:"Standby-tid",sbyBeforeASB:"ASB före FDP",reduction:"FDP-avdrag",nightCreditSub:"nattkredit",noNightCredit:"ingen nattkredit",asbReduces:">4h reducerar",baseFDP:"Max FDP",redLimit:"Din FDP-gräns",afterReduction:"efter standby-avdrag",actualFDP:"Din FDP",ok:"OK",over:"ÖVER",awakeTime:"Tid vaken",asbCombined:"ASB+FDP komb.",within:"inom max",dutyCred:"Loggad tjänstetid",asbFullDuty:"ASB = full duty",sby25:"25% av SBY till report",sby25full:"25% av hela SBY",withinLimits:"Inom gräns",overLimit:"ÖVER gräns",sbyVerdictOk:"Lagligt ✓",fdpOverLimit:"FDP över gräns",awakeOverMax:"Vaken tid över max (OM-A)",sbyOver16:"SBY över 16h",asbOverMax:"ASB över 12h (OM-A) eller komb. över 16h",respTooShort:"Under 60 min mellan utkallelse och report (OM-A)",breaksLimit:"Ej lagligt ✗",sbySource:"Källa: ORO.FTL.225, CS FTL.1.225, ORO.FTL.205(b)(1) Table 2.",tzLabel:"Tidsskillnad destination",tz0:"Samma tid (Norden, Centraleuropa)",tz1:"1h (Baltikum, London, Portugal)",tz2:"2h (Kanarieöarna, Island)",tz3:"3h (Turkiet, Grekland vintertid)",tzHint:"Skillnad mot din hemmabas. Ex från CET: Berlin, Rom = 0h. Riga, London = 1h.",rotLabel:"Hur länge sedan 1:a incheckning?",rotToday:"Idag (första passet)",rot12:"Ca 12h",rot24:"Ca 1 dygn",rot36:"Ca 1,5 dygn",rot48:"Ca 2 dygn",rot60:"Ca 2,5 dygn",rot72:"Ca 3 dygn",rot96:"Ca 4 dygn",rot120:"5+ dygn",rotHint:"Vid 0-1h TZ-skillnad påverkar detta inte FDP alls.",restBefore:"Vila innan (h)",restAfter:"Vila efter (h)",awayToggle:"Vila borta från hemmabas",ifrLabel:"In-flight rest — klass",ifrNone:"Ingen",extraCrew:"Extra besättning",splitDutyLabel:"Split duty",breakLabel:"Rast (h, min 3h)",appliedLimit:"Din FDP-gräns",restBeforeLabel:"Vila innan",underMin:"UNDER",acclimB:"Akklimatiserad till referenstid",acclimD:"Akklimatiserad till ny plats",acclimX:"Okänt akklimatiseringstillstånd",acclimBadge:"inom 2h-bandet",disruptiveTitle:"DISRUPTIVE SCHEDULE · LOKAL NATT",earlyStart:"Early start (05–06)",lateFinish:"Late finish (23–02)",nightDuty:"Night duty (02–05)",localNights:"Lokala nätter i vila",disruptiveWarn:"Disruptive — kontrollera lokala nätter (CS FTL.1.235(a)). 4+ disruptive → 60h extended recovery.",notDisruptive:"Ej disruptive schedule.",normVerdictOk:"Lagligt ✓",restUnderMin:"Vila under min.",normSource:"Källa: ORO.FTL.205, .105(1), CS FTL.1.205(c), .220, .235.",noExtension:"ingen förlängning",ifrSrc:"In-flight rest",splitSrc:"Split: bas+50% av",hRest:"h rast",extra:"extra",sekt:"sektorer",isCalledLabel:"Utkallad till flygning",notCalledLabel:"Ingen utkallelse (enbart SBY)",sbyFullPeriod:"Hela SBY-perioden",prevDutyLabel:"Föreg. tjänstgöring (h)",prevDutyHint:"Vila måste vara ≥ föreg. duty (ORO.FTL.235).",minRestReq:"minst:",extLabel:"Planerad förlängning (E1, +1h utan in-flight rest)",cdLabel:"Commander's discretion (max +2h)",extSrc:"Förlängning (CS FTL.1.205(b))",cdSuffix:"+ CD max 2h",extNotAllowed:"Förlängning ej tillåten för denna starttid/sektorantal, eller kombinerad med split/in-flight rest.",calledHint:"Av = ingen utkallelse skedde. Då beräknas endast duty-kredit (25% av hela SBY-perioden).",augHint:"Slå på om FDP:n efter utkallelsen flygs med förstärkt besättning och in-flight rest — tröskeln höjs från 6h till 8h (CS FTL.1.225(b)(8)).",sbySplitHint:"Slå på om FDP:n efter utkallelsen är en split duty — tröskeln höjs från 6h till 8h (CS FTL.1.225(b)(8)).",awayHint:"Vila som påbörjas borta från hemmabas: minimikravet är 10h istället för 12h (ORO.FTL.235(b)).",splitHint:"Rast ≥3h på marken förlänger max-FDP med upp till 50% av rasten. Rasten räknas i sin helhet som FDP. Kan ej kombineras med E1 eller in-flight rest (CS FTL.1.220).",extHint:"Planerad i förväg, max +1h, max 2 ggr per 7 dagar. Kräver utökad vila: pre- och postflight +2h, eller postflight +4h. Ej tillåten vid vissa starttider/sektorantal. Kan ej kombineras med split duty eller in-flight rest (CS FTL.1.205(b)).",cdHint:"Endast vid oförutsedda omständigheter som uppstår vid eller efter incheckning — kan aldrig planeras. Max +2h på gällande gräns. Om ökningen överskrids på sista sektorn p.g.a. oförutsedda omständigheter efter start får flygningen fortsätta till planerad destination eller alternativ. Efterföljande vila får aldrig understiga 10h. Befälhavaren ska rapportera användningen (ORO.FTL.205(f)).",viewSimple:"Enkel",viewAdvanced:"Avancerad",latestOff:"Senaste utcheckning",latestOffSub:"utan förlängning",simpleNote:"Max-FDP ur Table 2 (akklimatiserad besättning) baserat på incheckningstid i referenstid/lokaltid. Utan extension, split duty, in-flight rest eller standby-reduktion — växla till Avancerad för dessa.",
+hintSbyToReport:"Hur lång din standby var innan du checkade in. Om den var lång, minskar din max-FDP.",hintReduction:"Antal timmar som dras av från din max-FDP på grund av att du redan haft standby. Om du hade standby på natten minskar avdraget (nattkredit).",hintBaseFDP:"Hur långt du får flyga utan någon standby-reduktion eller förlängning. Baserat på din incheckningstid och antal flygningar.",hintRedLimit:"Den slutgiltiga gränsen för hur långt du faktiskt får flyga det här passet, efter att standby-avdraget har dragits av.",hintActFDP:"Ditt planerade flygpass — tiden från incheckning till utcheckning.",hintAwake:"Total tid du varit vaken sedan standbyn började. De flesta bolag har en intern maxgräns (ofta 18h).",hintDutyCred:"Den tid från din standby som räknas som tjänstetid i din loggbok (25% av standby-tiden, eller hela tiden om flygplatsstandby).",hintAppliedLim:"Din personliga maxgräns för det här passet. Inkluderar eventuell förlängning från split duty, in-flight rest eller commander's discretion.",hintRestBefore:"Kontroll att du vilat tillräckligt: minst 12h hemma (10h borta), och alltid minst lika lång vila som ditt förra pass."},
+en:{title:"FDP Calculator",ref:"ORO.FTL · CS FTL.1",tabStandby:"Standby",tabNormal:"Normal duty",sbyTypeLabel:"Standby type",sbyOther:"Other standby (home)",sbyAirport:"Airport standby (ASB)",sbyStart:"SBY start",sbyEnd:"SBY end",called:"Called (contacted)",reportIn:"Report on",reportOut:"Report off",sectors:"Sectors",augLabel:"Augmented (threshold → 8h)",splitLabel:"Split duty (threshold → 8h)",sbyBeforeOther:"Standby duration",sbyBeforeASB:"ASB before FDP",reduction:"FDP reduction",nightCreditSub:"night credit",noNightCredit:"no night credit",asbReduces:">4h reduces",baseFDP:"Max FDP",redLimit:"Your FDP limit",afterReduction:"after standby reduction",actualFDP:"Your FDP",ok:"OK",over:"EXCEEDED",awakeTime:"Time awake",asbCombined:"ASB+FDP combined",within:"within max",dutyCred:"Logged duty time",asbFullDuty:"ASB = full duty",sby25:"25% of SBY to report",sby25full:"25% of full SBY",withinLimits:"Within limits",overLimit:"EXCEEDS limit",sbyVerdictOk:"Legal ✓",fdpOverLimit:"FDP exceeds limit",awakeOverMax:"Awake over max (OM-A)",sbyOver16:"SBY over 16h",asbOverMax:"ASB over 12h (OM-A) or combined over 16h",respTooShort:"Less than 60 min call-to-report (OM-A)",breaksLimit:"NOT LEGAL ✗",sbySource:"Source: ORO.FTL.225, CS FTL.1.225, Table 2.",tzLabel:"TZ difference (dest.)",tz0:"Same time (Nordics, C. Europe)",tz1:"1h (Baltics, London, Portugal)",tz2:"2h (Canaries, Iceland)",tz3:"3h (Turkey, Greece winter)",tzHint:"Diff from your home base. Ex from CET: Berlin=0h. Riga, London=1h.",rotLabel:"Time since 1st check-in?",rotToday:"Today (first duty)",rot12:"~12h",rot24:"~1 day",rot36:"~1.5 days",rot48:"~2 days",rot60:"~2.5 days",rot72:"~3 days",rot96:"~4 days",rot120:"5+ days",rotHint:"At 0-1h TZ diff, this has no effect.",restBefore:"Rest before (h)",restAfter:"Rest after (h)",awayToggle:"Rest away from base",ifrLabel:"In-flight rest — class",ifrNone:"None",extraCrew:"Extra crew",splitDutyLabel:"Split duty",breakLabel:"Break (h, min 3h)",appliedLimit:"Your FDP limit",restBeforeLabel:"Rest before",underMin:"UNDER",acclimB:"Acclimatised to ref. time",acclimD:"Acclimatised to new location",acclimX:"Unknown acclimatisation",acclimBadge:"within 2h band",disruptiveTitle:"DISRUPTIVE SCHEDULE · LOCAL NIGHT",earlyStart:"Early start (05–06)",lateFinish:"Late finish (23–02)",nightDuty:"Night duty (02–05)",localNights:"Local nights in rest",disruptiveWarn:"Disruptive — check local nights (CS FTL.1.235(a)). 4+ → 60h extended recovery.",notDisruptive:"Not disruptive.",normVerdictOk:"Legal ✓",fdpOverLimit:"FDP exceeds limit",restUnderMin:"Rest below min.",normSource:"Source: ORO.FTL.205, .105(1), CS FTL.1.205(c), .220, .235.",noExtension:"no extension",ifrSrc:"In-flight rest",splitSrc:"Split: base+50% of",hRest:"h break",extra:"extra",sekt:"sectors",isCalledLabel:"Called to flight duty",notCalledLabel:"No callout (SBY only)",sbyFullPeriod:"Full SBY period",prevDutyLabel:"Prev. duty length (h)",prevDutyHint:"Rest must be ≥ prev. duty (ORO.FTL.235).",minRestReq:"min. required:",extLabel:"Planned extension (E1, +1h without in-flight rest)",cdLabel:"Commander's discretion (max +2h)",extSrc:"Extension (CS FTL.1.205(b))",cdSuffix:"+ CD max 2h",extNotAllowed:"Extension not allowed for this start time/sector count, or combined with split/in-flight rest.",calledHint:"Off = no callout occurred. Only duty credit is calculated (25% of the full SBY period).",augHint:"Enable if the FDP after callout is flown with augmented crew and in-flight rest — threshold rises from 6h to 8h (CS FTL.1.225(b)(8)).",sbySplitHint:"Enable if the FDP after callout is a split duty — threshold rises from 6h to 8h (CS FTL.1.225(b)(8)).",awayHint:"Rest commencing away from home base: minimum requirement is 10h instead of 12h (ORO.FTL.235(b)).",splitHint:"Ground break ≥3h extends max FDP by up to 50% of the break. The break counts in full as FDP. Cannot be combined with E1 or in-flight rest (CS FTL.1.220).",extHint:"Planned in advance, max +1h, max twice per 7 days. Requires increased rest: pre- and post-flight +2h, or post-flight +4h. Not allowed at certain start times/sector counts. Cannot be combined with split duty or in-flight rest (CS FTL.1.205(b)).",cdHint:"Only for unforeseen circumstances arising at or after reporting — can never be planned. Max +2h on the applicable limit. If on the final sector the allowed increase is exceeded due to unforeseen circumstances after take-off, the flight may continue to the planned destination or alternate. Subsequent rest never below 10h. The commander must report its use (ORO.FTL.205(f)).",viewSimple:"Simple",viewAdvanced:"Advanced",latestOff:"Latest check-out",latestOffSub:"without extension",simpleNote:"Max FDP from Table 2 (acclimatised crew) based on check-in at reference/local time. Without extension, split duty, in-flight rest or standby reduction — switch to Advanced for those.",
+hintSbyToReport:"How long your standby was before you checked in. If it was long, your max FDP is reduced.",hintReduction:"Hours subtracted from your max FDP because you already had standby. Night credit reduces this deduction.",hintBaseFDP:"How long you're allowed to fly without any standby reduction or extension. Based on your check-in time and number of sectors.",hintRedLimit:"The final limit on how long you can actually fly this duty, after the standby deduction.",hintActFDP:"Your planned duty — the time from check-in to check-out.",hintAwake:"Total time you've been awake since standby started. Most airlines have an internal maximum (typically 18h).",hintDutyCred:"The portion of your standby that counts as duty time in your logbook (25% of standby, or 100% for airport standby).",hintAppliedLim:"Your personal maximum for this duty. Includes any extensions from split duty, in-flight rest, or commander's discretion.",hintRestBefore:"Checks that you rested enough: at least 12h at home (10h away), and never less than your previous duty."}};
 
-// ─── Tables (unchanged FTL logic) ────────────────────────────────────────
+// ─── Tables ─────────────────────────────────────────────────────────────
 const T2=[{f:360,t:809,v:[780,750,720,690,660,630,600,570,540]},{f:810,t:839,v:[765,735,705,675,645,615,585,555,540]},{f:840,t:869,v:[750,720,690,660,630,600,570,540,540]},{f:870,t:899,v:[735,705,675,645,615,585,555,540,540]},{f:900,t:929,v:[720,690,660,630,600,570,540,540,540]},{f:930,t:959,v:[705,675,645,615,585,555,540,540,540]},{f:960,t:989,v:[690,660,630,600,570,540,540,540,540]},{f:990,t:1019,v:[675,645,615,585,555,540,540,540,540]},{f:1020,t:299,v:[660,630,600,570,540,540,540,540,540]},{f:300,t:314,v:[720,690,660,630,600,570,540,540,540]},{f:315,t:329,v:[735,705,675,645,615,585,555,540,540]},{f:330,t:344,v:[750,720,690,660,630,600,570,540,540]},{f:345,t:359,v:[765,735,705,675,645,615,585,555,540]}];
 const T3=[660,630,600,570,540,540,540];
 const TEXT=[{f:360,t:374,v:[null,null,null,null]},{f:375,t:389,v:[795,765,735,705]},{f:390,t:404,v:[810,780,750,720]},{f:405,t:419,v:[825,795,765,735]},{f:420,t:809,v:[840,810,780,750]},{f:810,t:839,v:[825,795,765,null]},{f:840,t:869,v:[810,780,750,null]},{f:870,t:899,v:[795,765,735,null]},{f:900,t:929,v:[780,750,720,null]},{f:930,t:959,v:[765,null,null,null]},{f:960,t:989,v:[750,null,null,null]},{f:990,t:1019,v:[735,null,null,null]},{f:1020,t:1049,v:[720,null,null,null]},{f:1050,t:1079,v:[705,null,null,null]},{f:1080,t:1109,v:[690,null,null,null]},{f:1110,t:1139,v:[675,null,null,null]},{f:1140,t:359,v:[null,null,null,null]}];
@@ -225,50 +139,33 @@ function lExt(rt,s){if(s>5)return null;const rm=tm(rt);const b=TEXT.find(b=>b.f<
 function lT2(rt,s){const rm=tm(rt);const b=T2.find(b=>{const f=b.f,t=b.t;return f<=t?rm>=f&&rm<=t:rm>=f||rm<=t})||T2[0];const i=Math.min(Math.max(s,1),10)<=2?0:Math.min(s,10)-2;return b.v[Math.min(i,b.v.length-1)]}
 function lT3(s){const i=Math.min(Math.max(s,1),8)<=2?0:Math.min(s,8)-2;return T3[Math.min(i,T3.length-1)]}
 
-// ─── Helpers (unchanged) ─────────────────────────────────────────────────
+// ─── Helpers ────────────────────────────────────────────────────────────
 function tm(t){const p=t.split(':');return(+p[0])*60+(+p[1])}
 function fmt(m){const s=m<0?'-':'';const a=Math.abs(Math.round(m));return s+Math.floor(a/60)+':'+String(a%60).padStart(2,'0')}
 function tfmt(m){m=((m%1440)+1440)%1440;return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0')}
+
 function nightCredit(s0,end){const st=((s0%1440)+1440)%1440;if(!(st>=1380||st<420))return 0;let c=0;for(let m=s0;m<end;m++){const n=((m%1440)+1440)%1440;if(n>=1380||n<420)c++}return c}
+
 function acclim(td,hrs,t){const a=Math.abs(td);if(a<2)return{code:'B',label:t.acclimB+' ('+t.acclimBadge+')'};
 const r=a<4?0:a<=6?1:a<=9?2:3;const c=hrs<48?0:hrs<72?1:hrs<96?2:hrs<120?3:4;
 const tbl=[['B','D','D','D','D'],['B','X','D','D','D'],['B','X','X','D','D'],['B','X','X','X','D']];
 const code=tbl[r][c];return{code,label:{B:t.acclimB,D:t.acclimD,X:t.acclimX}[code]}}
-const IFR={1:{class3:840,class2:900,class1:960},2:{class3:900,class2:960,class1:1020}};
-// CS FTL.1.235(b)(3)(i): minimum local nights of rest at home base to compensate for
-// time zone differences (only applies when max TZ diff during the rotation is >=4h).
-const TZREST=[{max:6,v:[2,2,3,3]},{max:9,v:[2,3,3,4]},{max:12,v:[2,3,4,5]}];
-function tzRestNights(td,hrs){const a=Math.abs(td);if(a<4)return 0;const c=hrs<48?0:hrs<72?1:hrs<96?2:3;const row=a<=6?TZREST[0]:a<=9?TZREST[1]:TZREST[2];return row.v[c]}
-function disruptive(rt,ot){const r=tm(rt),o=tm(ot);return{early:r>=300&&r<=359,late:o>=1380||o<=119,night:(()=>{let off=o<r?o+1440:o;return(r<=299&&off>=120)||off>=1560})()}}
-function localNights(ot,hrs){const offM=tm(ot),re=offM+hrs*60;let n=0,ns=Math.ceil(offM/1440)*1440+1320;if(ns-1440+480>offM&&ns-1440>=offM)ns-=1440;while(ns<re){if(ns>=offM&&ns+480<=re)n++;ns+=1440}return n}
-// CS FTL.1.220(e)(2): only the break's first 6h count toward the 50% FDP bonus, and any
-// portion within WOCL (02:00-05:59) is excluded even within those 6h.
-function splitBreakCountable(breakStart,breakH){
-  const bs=tm(breakStart);const totalMin=Math.round(breakH*60);let countable=0;
-  for(let m=0;m<totalMin&&m<360;m++){
-    const clock=((bs+m)%1440+1440)%1440;
-    if(!(clock>=120&&clock<360))countable++;
-  }
-  return countable;
-}
 
-// ─── State ────────────────────────────────────────────────────────────
-let lang=(function(){try{return localStorage.getItem('fdpLang')||'en'}catch(e){return 'en'}})();
-let mode='normal',nView='simple';
-let theme=(function(){try{return localStorage.getItem('fdpTheme')||'blue'}catch(e){return 'blue'}})();
-const THEME_ACCENT={gold:'#F2C876',blue:'#1E4488'};
-const THEME_META={gold:'#0A1410',blue:'#F2F4F7'};
-const THEME_TRACK={gold:{bg:'rgba(233,228,222,.09)',tick:'rgba(233,228,222,.16)'},blue:{bg:'rgba(20,40,80,.10)',tick:'rgba(20,40,80,.22)'}};
-let S={sbyType:'other',sbyStart:'04:00',sbyEnd:'16:00',isCalled:true,callTime:'10:30',reportTime:'15:00',sectors:3,offTime:'21:00',aug:false,split:false,asbSplit:false,breakStart:'13:00',breakH:0};
-let N={report:'06:00',off:'14:30',sectors:2,tz:0,hrs:0,restFac:'none',extraCrew:0,split:false,breakH:0,breakStart:'10:00',prevRest:12,prevDuty:8,away:false,postRest:12,ext:false,cd:false,longSector:false,nextEarly:false};
-// Punkt 6: inmatningar överlever appomstart. Object.assign över defaults gör att nya
-// fält i framtida versioner får sina defaultvärden även med gammal sparad state.
-try{const sv=JSON.parse(localStorage.getItem('fdpState')||'null');if(sv){if(sv.S)Object.assign(S,sv.S);if(sv.N)Object.assign(N,sv.N);if(sv.mode==='standby'||sv.mode==='normal')mode=sv.mode;if(sv.nView==='simple'||sv.nView==='advanced')nView=sv.nView}}catch(e){}
-function saveState(){try{localStorage.setItem('fdpState',JSON.stringify({S,N,mode,nView}))}catch(e){}}
-let ACC={extras:false};
+const IFR={1:{class3:840,class2:900,class1:960},2:{class3:900,class2:960,class1:1020}};
+
+function disruptive(rt,ot){const r=tm(rt),o=tm(ot);return{early:r>=300&&r<=359,late:o>=1380||o<=119,night:(()=>{let off=o<r?o+1440:o;return r<=299||off>=1560||(off>=120&&r<=299)})()}}
+
+function localNights(ot,hrs){const offM=tm(ot),re=offM+hrs*60;let n=0,ns=Math.ceil(offM/1440)*1440+1320;if(ns-1440+480>offM&&ns-1440>=offM)ns-=1440;while(ns<re){if(ns>=offM&&ns+480<=re)n++;ns+=1440}return n}
+
+// ─── State ──────────────────────────────────────────────────────────────
+let lang='en',mode='standby',nView='simple';
+let S={sbyType:'other',sbyStart:'04:00',sbyEnd:'16:00',isCalled:true,callTime:'10:30',reportTime:'15:00',sectors:3,offTime:'21:00',aug:false,split:false};
+let N={report:'06:00',off:'14:30',sectors:2,tz:0,hrs:0,restFac:'none',extraCrew:0,split:false,breakH:0,prevRest:12,prevDuty:8,away:false,postRest:12,ext:false,cd:false};
+try{const st=JSON.parse(localStorage.getItem('fdpState'));if(st&&st.S&&st.N){lang=st.lang||'en';mode=st.mode||'standby';nView=st.nView||'simple';Object.assign(S,st.S);Object.assign(N,st.N);}}catch(e){}
+
 function t(){return L[lang]}
 
-// ─── Calc (unchanged FTL logic) ──────────────────────────────────────────
+// ─── Calc ───────────────────────────────────────────────────────────────
 function calcSby(){
   const s0=tm(S.sbyStart);let se=tm(S.sbyEnd);if(se<s0)se+=1440;
   let cm=tm(S.callTime);if(cm<s0)cm+=1440;
@@ -278,25 +175,14 @@ function calcSby(){
     const dur=se-s0,dc=Math.round(dur*.25),nc=nightCredit(s0,se),aw=dur-nc;
     return{type:'other',called:false,sbyBefore:dur,red:0,nc:0,baseFDP:0,redLimit:0,actFDP:0,totalAwake:aw,awLim:1080,fdpOk:true,awOk:aw<=1080,sbyOk:dur<=960,respOk:true,dc,s0,se,cm:s0,rm:s0,om:s0}}
   if(S.sbyType==='airport'){
-    const dur=rm-s0,asbMaxOk=dur<=720;
-    if(S.asbSplit){
-      // Called off airport standby to perform a split duty: FDP begins at the ASB report
-      // time (s0->rm still counts, no >4h reduction) and runs through to the end of the
-      // split duty. The split-duty 50%-of-break bonus (6h cap, WOCL-excluded) applies.
-      const base=lT2(S.reportTime,S.sectors);
-      const spOk=S.breakH>=3;
-      const countableMin=spOk?splitBreakCountable(S.breakStart,S.breakH):0;
-      const rl=spOk?base+Math.floor(countableMin*.5):base;
-      const act=om-s0,comb=act;
-      return{type:'airport',asbSplit:true,called:true,sbyBefore:dur,red:0,nc:0,baseFDP:base,redLimit:rl,actFDP:act,totalAwake:comb,awLim:960,fdpOk:act<=rl,awOk:comb<=960,sbyOk:comb<=960&&asbMaxOk,asbMaxOk,respOk:true,dc:dur,s0,se,cm:rm,rm,om,spOk,countableMin,breakH:S.breakH}
-    }
-    const base=lT2(S.reportTime,S.sectors),act=om-rm,red=Math.max(0,dur-240),rl=Math.max(0,base-red),comb=om-s0;
-    return{type:'airport',asbSplit:false,called:true,sbyBefore:dur,red,nc:0,baseFDP:base,redLimit:rl,actFDP:act,totalAwake:comb,awLim:960,fdpOk:act<=rl,awOk:comb<=960,sbyOk:comb<=960&&asbMaxOk,asbMaxOk,respOk:true,dc:dur,s0,se,cm:rm,rm,om}}
+    const dur=rm-s0,base=lT2(S.reportTime,S.sectors),act=om-rm,red=Math.max(0,dur-240),rl=Math.max(0,base-red),comb=om-s0;
+    const asbMaxOk=dur<=720; // OM-A: max ASB 12h
+    return{type:'airport',called:true,sbyBefore:dur,red,nc:0,baseFDP:base,redLimit:rl,actFDP:act,totalAwake:comb,awLim:960,fdpOk:act<=rl,awOk:comb<=960,sbyOk:comb<=960&&asbMaxOk,asbMaxOk,respOk:true,dc:dur,s0,se,cm:rm,rm,om}}
   const sbyToRep=rm-s0,base=lT2(S.reportTime,S.sectors),act=om-rm;
   const thresh=(S.aug||S.split)?480:360;let rawRed=Math.max(0,sbyToRep-thresh);
   const nc=nightCredit(s0,cm);const red=Math.max(0,rawRed-nc);
-  const rl=Math.max(0,base-red);const nightSby=nightCredit(s0,cm);const aw=(om-s0)-nightSby;
-  const respOk=(rm-cm)>=60;
+  const rl=Math.max(0,base-red);const nightSby=nightCredit(s0,rm);const aw=(om-s0)-nightSby;
+  const respOk=(rm-cm)>=60; // OM-A: min 60 min call->report
   return{type:'other',called:true,sbyBefore:sbyToRep,red,nc,baseFDP:base,redLimit:rl,actFDP:act,totalAwake:aw,awLim:1080,fdpOk:act<=rl,awOk:aw<=1080,sbyOk:sbyToRep<=960,respOk,dc:Math.round(sbyToRep*.25),s0,se,cm,rm,om}}
 
 function calcNorm(){
@@ -305,212 +191,83 @@ function calcNorm(){
   if(acc.code==='X'){base=lT3(N.sectors);tbl='Table 3'}else{base=lT2(N.report,N.sectors);tbl=acc.code==='D'?'Standard (D)':'Standard'}
   const ifrOk=N.restFac!=='none'&&N.extraCrew>0&&N.sectors<=3;let ifrLim=null;
   if(ifrOk){const r=IFR[Math.min(N.extraCrew,2)];ifrLim=r?r[N.restFac]:null}
-  // CS FTL.1.205(c)(4): +1h if FDP includes 1 sector >9h continuous flight time, max 2 sectors total
-  const longSectorOk=ifrOk&&N.longSector&&N.sectors<=2;
-  if(longSectorOk&&ifrLim!==null)ifrLim=ifrLim+60;
-  const spOk=N.split&&N.breakH>=3&&!ifrOk;let spLim=null;let spCountableMin=0;
-  if(spOk){spCountableMin=splitBreakCountable(N.breakStart,N.breakH);spLim=base+Math.floor(spCountableMin*.5)}
+  const spOk=N.split&&N.breakH>=3&&!ifrOk;let spLim=null;if(spOk)spLim=base+Math.floor(N.breakH*60*.5);
   const extAp=N.ext&&!ifrOk&&!spOk;const extVal=extAp?lExt(N.report,N.sectors):null;
-  let lim=base,src=tbl+', '+T.noExtension;let extUsedMin=0;
-  if(ifrOk&&ifrLim){lim=ifrLim;src=T.ifrSrc+': '+N.extraCrew+' '+T.extra+', '+N.restFac+(longSectorOk?' + '+T.longSectorSuffix:'')}
-  else if(spOk){lim=spLim;const rawMin=Math.round(N.breakH*60);src=T.splitSrc+' '+N.breakH+T.hRest+(spCountableMin<rawMin?' ('+fmt(spCountableMin)+' '+T.splitCountedSuffix+')':'')}
-  else if(extAp&&extVal!==null){lim=extVal;extUsedMin=Math.max(0,extVal-base);src=T.extSrc}
+  let lim=base,src=tbl+', '+T.noExtension;
+  if(ifrOk&&ifrLim){lim=ifrLim;src=T.ifrSrc+': '+N.extraCrew+' '+T.extra+', '+N.restFac}
+  else if(spOk){lim=spLim;src=T.splitSrc+' '+N.breakH+T.hRest}
+  else if(extAp&&extVal!==null){lim=extVal;src=T.extSrc}
   const extNA=extAp&&extVal===null;
-  // ORO.FTL.205(f)(1)(i): CD is based on the limit after applying (b)+(e) [in-flight rest]
-  // or split duty (220) — those get the full CD cap on top. A planned E1 extension (d) is
-  // NOT in that list, so E1 and CD share the same 2h envelope (not additive).
-  let cdCap=0;
-  if(N.cd){
-    const capBase=ifrOk?180:120; // augmented crew: 3h: everyone else: 2h
-    cdCap=extUsedMin>0?Math.max(0,120-extUsedMin):capBase;
-    lim=lim+cdCap;
-    src=src+' + CD '+fmt(cdCap);
-  }
+  if(N.cd){lim=lim+120;src=src+' '+T.cdSuffix}
   const fdpOk=act<=lim;const bf=N.away?10:12;const minR=Math.max(bf,N.prevDuty);const rOk=N.prevRest>=minR;
   const dis=disruptive(N.report,N.off);const pn=localNights(N.off,N.postRest);
-  const tzAbs=Math.abs(N.tz);const tzApplies=tzAbs>=4;
-  // CS FTL.1.235(b)(3)(i): at home base with >=4h TZ diff, rest must include a minimum
-  // number of local nights (table based on TZ diff band + time elapsed since 1st report).
-  const tzHomeReq=tzApplies?tzRestNights(N.tz,N.hrs):0;
-  const tzHomeApplies=tzApplies&&!N.away;
-  const tzHomeOk=tzHomeApplies?pn>=tzHomeReq:true;
-  // CS FTL.1.205(c)(6) [in-flight rest] and CS FTL.1.235(b)(3)(ii) [>=4h TZ diff away from
-  // base] share the same formula: destination rest >= max(this duty's length, 14h).
-  const destRestApplies=ifrOk||(tzApplies&&N.away);
-  const destRestMin=destRestApplies?Math.max(840,act):0;
-  const destRestOk=destRestApplies?(N.postRest*60)>=destRestMin:true;
-  // CS FTL.1.235(a)(1): a transition from late finish/night duty to an early start at home
-  // base requires the intervening rest to include at least 1 local night.
-  const isLateOrNight=dis.late||dis.night;
-  const transitionApplies=N.nextEarly&&isLateOrNight&&!N.away;
-  const transitionOk=transitionApplies?pn>=1:true;
-  return{rm,om,act,base,lim,src,tbl,fdpOk,acc,rOk,minR,bf,dis,pn,extNA,ifrOk,spOk,spCountableMin,extAp:extAp&&extVal!==null,cdCap,longSectorOk,destRestApplies,destRestMin,destRestOk,tzApplies,tzHomeApplies,tzHomeReq,tzHomeOk,isLateOrNight,transitionApplies,transitionOk}}
-
-// ─── Render primitives ────────────────────────────────────────────────
-function stat(lbl,val,sub,accent,bad,hint,warn){const hid=hint?hintId(hint):'';const iBtn=hint?hintBtn(hid):'';const hBox=hint?hintBox(hid,hint):'';const cls=bad?' bad':warn?' warn':'';return'<div class="stat'+cls+'"><div class="stat-lbl">'+lbl+iBtn+'</div><div class="stat-val'+cls+(accent&&!bad&&!warn?' accent':'')+'">'+val+'</div><div class="stat-sub'+cls+'">'+sub+'</div>'+hBox+'</div>'}
-function field(lbl,inner,info){const hid=info?hintId(info):'';const iBtn=info?hintBtn(hid):'';const hBox=info?hintBox(hid,info):'';return'<div><div class="fl">'+lbl+iBtn+'</div>'+inner+hBox+'</div>'}
-function sel(id,opts,val){return'<select id="'+id+'">'+opts.map(o=>'<option value="'+o[0]+'"'+(String(o[0])===String(val)?' selected':'')+'>'+o[1]+'</option>').join('')+'</select>'}
-function inp(id,type,val,extra){return'<input type="'+type+'" id="'+id+'" value="'+val+'" '+(type==='number'?'inputmode="decimal" ':'')+(extra||'')+'>'}
-function tgl(id,on,lbl,hint){const hid=hint?hintId(hint):'';const iBtn=hint?hintBtn(hid):'';const hBox=hint?hintBox(hid,hint):'';return'<div><div class="tgl" data-tgl="'+id+'"><div class="tgl-box'+(on?' on':'')+'"><div class="tgl-dot"></div></div><span class="tgl-label">'+lbl+'</span>'+iBtn+'</div>'+hBox+'</div>'}
-function accordion(key,title,sub,body){const open=ACC[key];return'<div><div class="accbtn" data-acc="'+key+'"><div class="accbtn-txt"><div class="accbtn-title"><span class="accbtn-dot"></span>'+title+'</div><div class="accbtn-sub">'+sub+'</div></div><div class="chev'+(open?' open':'')+'"><svg viewBox="0 0 10 10" fill="none"><path d="M1 3l4 4 4-4" style="stroke:var(--gold)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div><div class="acc-body'+(open?' open':'')+'">'+body+'</div></div>'}
-
-// polar helpers for the instrument gauge
-function pol(cx,cy,r,a){const rad=a*Math.PI/180;return[cx+r*Math.cos(rad),cy-r*Math.sin(rad)]}
-// Timeline label collision avoidance: given marker positions (%) in left-to-right order,
-// return a matching array of 'cl-l'/'cl-r'/'' classes so any two markers closer than the
-// threshold diverge their labels (left one anchors leftward, right one anchors rightward)
-// instead of stacking on top of each other. Walks every adjacent pair, not just the last one.
-function tlCollide(positions,threshold){
-  threshold=threshold||9;
-  const n=positions.length;
-  const edgeThresh=12; // within this % of either edge, centered text would clip — force a safe anchor
-  const anchor=positions.map(p=>p<edgeThresh?'r':(p>100-edgeThresh?'l':null));
-  const row=positions.map(()=>0);
-  if(n<2)return{anchor,row};
-  // Callers build marker arrays in a fixed semantic order (e.g. Report, Max, Off), which
-  // does NOT necessarily match left-to-right screen position (a short duty can put "Off"
-  // to the left of "Max"). Cluster by actual position, not array order, then map back.
-  const order=positions.map((p,i)=>i).sort((a,b)=>positions[a]-positions[b]);
-  const clusters=[];let cur=[order[0]];
-  for(let k=1;k<n;k++){
-    const i=order[k],prev=order[k-1];
-    if(Math.abs(positions[i]-positions[prev])<threshold)cur.push(i);
-    else{clusters.push(cur);cur=[i]}
-  }
-  clusters.push(cur);
-  clusters.forEach(cluster=>{
-    // cluster is a list of original indices, already in left-to-right screen order.
-    if(cluster.length<2)return;
-    if(cluster.length===2){
-      const[a,b]=cluster;
-      if(!anchor[a])anchor[a]='l';
-      if(!anchor[b])anchor[b]='r';
-      // Both got forced toward the same edge (e.g. both near the right edge) — diverging
-      // horizontally isn't possible, so stack the second one on its own row instead.
-      if(anchor[a]===anchor[b])row[b]=1;
-    }else{
-      // 3+ markers bunched together: give each its own row (not just alternating two) so
-      // none share a row with a near neighbour. Edge-forced anchors (set above) still apply.
-      cluster.forEach((idx,k)=>{row[idx]=k});
-    }
-  });
-  return{anchor,row};
-}
-// Exact pixel height needed for a timeline container given the deepest row used by its
-// markers, so nothing gets clipped or spills past the card — no more guessing a constant.
-function tlHeight(rowArr){const maxRow=rowArr&&rowArr.length?Math.max(0,...rowArr):0;return 66+maxRow*24}
-// Unified timeline marker: anchor is 'l' (text ends at tick, extends left) | 'r' (text
-// starts at tick, extends right) | null (centered) — combined with a vertical row index so
-// a marker can be both edge-safe AND stacked away from a close neighbour at the same time.
-function tlMk(p,l,ti,ac,anchor,rowN){
-  rowN=rowN||0;
-  const cls=anchor==='l'?'cl-l':anchor==='r'?'cl-r':'';
-  let timeStyle='color:'+(ac?'var(--gold-bright)':'var(--text-2)');
-  let labelStyle='';
-  if(anchor){
-    if(rowN){timeStyle+=';top:'+(36+rowN*22)+'px';labelStyle=' style="top:'+(52+rowN*22)+'px"'}
-  }else if(rowN){
-    timeStyle+=';margin-top:'+(4+rowN*20)+'px';
-  }
-  return'<div class="tl-mk'+(cls?' '+cls:'')+'" style="left:'+p+'%"><div class="tl-mk-line" style="background:'+(ac?'var(--gold)':'var(--text-3)')+'"></div><div class="tl-mk-time" style="'+timeStyle+'">'+ti+'</div><div class="tl-mk-label"'+labelStyle+'>'+l+'</div></div>'
-}
-function arcPath(cx,cy,r,a0,a1){const[x1,y1]=pol(cx,cy,r,a0),[x2,y2]=pol(cx,cy,r,a1);const large=Math.abs(a0-a1)>180?1:0;const sweep=a0>a1?1:0;return'M '+x1+' '+y1+' A '+r+' '+r+' 0 '+large+' '+sweep+' '+x2+' '+y2}
-// Signature instrument: semicircular FDP gauge, gold bezel, limit tick, needle-free arc fill
-function gaugeSVG(actualMin,limitMin,ok,warnClose){
-  const cx=120,cy=118,r=94;
-  const scaleMax=Math.max(limitMin*1.18,actualMin*1.06,60);
-  const fA=Math.min(actualMin/scaleMax,1),fL=Math.min(limitMin/scaleMax,1);
-  const aActual=180-fA*180,aLimit=180-fL*180;
-  const color=!ok?'#E2685A':warnClose?'#E0A93E':'#6FBF8B';
-  const [tx1,ty1]=pol(cx,cy,r-13,aLimit),[tx2,ty2]=pol(cx,cy,r+13,aLimit);
-  let ticks='';
-  for(let i=0;i<=8;i++){const a=180-(i/8)*180;const[x1,y1]=pol(cx,cy,r+9,a),[x2,y2]=pol(cx,cy,r+15,a);ticks+='<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+THEME_TRACK[theme].tick+'" stroke-width="1.5"/>'}
-  return'<svg viewBox="0 0 240 134" width="100%" style="max-width:280px;display:block;margin:0 auto" xmlns="http://www.w3.org/2000/svg">'+
-    '<path d="'+arcPath(cx,cy,r,180,0)+'" fill="none" stroke="'+THEME_TRACK[theme].bg+'" stroke-width="15" stroke-linecap="round"/>'+
-    ticks+
-    '<path d="'+arcPath(cx,cy,r,180,aActual)+'" fill="none" stroke="'+color+'" stroke-width="15" stroke-linecap="round"/>'+
-    '<line x1="'+tx1+'" y1="'+ty1+'" x2="'+tx2+'" y2="'+ty2+'" stroke="'+THEME_ACCENT[theme]+'" stroke-width="3" stroke-linecap="round"/>'+
-    '</svg>'
-}
+  return{rm,om,act,base,lim,src,tbl,fdpOk,acc,rOk,minR,bf,dis,pn,extNA}}
 
 // ─── Render ─────────────────────────────────────────────────────────────
+function h(tag,cls,html){return'<div class="'+cls+'">'+html+'</div>'}
+function stat(lbl,val,sub,accent,bad,hint){const hid=hint?'h'+(_hid++):'';const iBtn=hint?'<span class="info-i" onclick="event.stopPropagation();togHint(\''+hid+'\',this)">i</span>':'';const hBox=hint?'<div class="hint-box" id="'+hid+'">'+hint+'</div>':'';return'<div class="stat'+(bad?' bad':'')+'"><div class="stat-lbl" style="display:flex;justify-content:space-between;align-items:center">'+lbl+iBtn+'</div><div class="stat-val'+(bad?' bad':accent?' accent':'')+'">'+val+'</div><div class="stat-sub'+(bad?' bad':'')+'">'+sub+'</div>'+hBox+'</div>'}
+function field(lbl,inner,info){const hid='h'+(_hid++);const iBtn=info?'<span class="info-i" onclick="event.stopPropagation();togHint(\''+hid+'\',this)">i</span>':'';const hBox=info?'<div class="hint-box" id="'+hid+'">'+info+'</div>':'';return'<div><div class="fl" style="display:flex;align-items:center">'+lbl+iBtn+'</div>'+inner+hBox+'</div>'}
+function sel(id,opts,val){return'<select id="'+id+'">'+opts.map(o=>'<option value="'+o[0]+'"'+(String(o[0])===String(val)?' selected':'')+'>'+o[1]+'</option>').join('')+'</select>'}
+function inp(id,type,val,extra){return'<input type="'+type+'" id="'+id+'" value="'+val+'" '+(extra||'')+'>'}
+function tgl(id,on,lbl,hint){const hid='h'+(_hid++);const iBtn=hint?'<span class="info-i" onclick="event.stopPropagation();togHint(\''+hid+'\',this)">i</span>':'';const hBox=hint?'<div class="hint-box" id="'+hid+'">'+hint+'</div>':'';return'<div><div class="tgl" data-tgl="'+id+'"><div class="tgl-box'+(on?' on':'')+'"><div class="tgl-dot"></div></div><span class="tgl-label">'+lbl+'</span>'+iBtn+'</div>'+hBox+'</div>'}
+
 function render(){
-  const T=t();let o='';_hcount={};
-  document.documentElement.setAttribute('data-theme',theme);
-  const mcTag=document.querySelector('meta[name="theme-color"]');if(mcTag)mcTag.setAttribute('content',THEME_META[theme]);
-  o+='<div class="hdr"><div class="brand"><div class="brand-mark">FDP</div><div><h1>'+T.title+'</h1><div class="ref">'+T.ref+'</div></div></div><div style="display:flex;gap:8px"><button class="lang-btn" id="themeBtn" title="'+T.themeToggle+'">'+(theme==='gold'?'BLUE':'GOLD')+'</button><button class="lang-btn" id="langBtn">'+(lang==='sv'?'EN':'SV')+'</button></div></div>';
-  o+='<div class="tabs-wrap"><div class="tabs"><button class="tab'+(mode==='normal'?' on':'')+'" data-mode="normal">'+T.tabNormal+'</button><button class="tab'+(mode==='standby'?' on':'')+'" data-mode="standby">'+T.tabStandby+'</button></div></div>';
+  try{localStorage.setItem('fdpState',JSON.stringify({lang,mode,nView,S,N}))}catch(e){}
+  const T=t();let o='';
+  // Header
+  o+='<div class="hdr"><div><div class="ref">'+T.ref+'</div><h1>'+T.title+'</h1></div><button class="lang-btn" id="langBtn">'+(lang==='sv'?'EN':'SV')+'</button></div>';
+  // Tabs
+  o+='<div class="tabs"><button class="tab'+(mode==='normal'?' on':'')+'" data-mode="normal">'+T.tabNormal+'</button><button class="tab'+(mode==='standby'?' on':'')+'" data-mode="standby">'+T.tabStandby+'</button></div>';
 
   if(mode==='standby'){
     const c=calcSby();
+    // Verdict at top
+    const allOk=c.called?(c.fdpOk&&c.awOk&&c.sbyOk&&c.respOk):c.sbyOk;
+    const fails=[c.called&&!c.fdpOk&&T.fdpOverLimit,c.called&&!c.awOk&&T.awakeOverMax,!c.sbyOk&&(c.type==='airport'?T.asbOverMax:T.sbyOver16),c.called&&!c.respOk&&T.respTooShort].filter(Boolean).join('. ');
+    o+='<div class="verdict '+(allOk?'ok':'fail')+'" style="margin-bottom:16px"><div class="verdict-dot"></div><div><div class="verdict-title">'+(allOk?T.sbyVerdictOk:T.breaksLimit)+'</div>'+(!allOk?'<div class="verdict-sub">'+fails+'</div>':'')+'</div></div>';
+    
+    // Controls
     o+='<div class="card">';
-    o+='<div class="card-title">SETUP</div>';
     o+=field(T.sbyTypeLabel,sel('sbyType',[['other',T.sbyOther],['airport',T.sbyAirport]],S.sbyType));
     o+='<div class="row">'+field(T.sbyStart,inp('sbyStart','time',S.sbyStart))+field(T.sbyEnd,inp('sbyEnd','time',S.sbyEnd))+'</div>';
     if(S.sbyType==='other') o+=tgl('isCalled',S.isCalled,S.isCalled?T.isCalledLabel:T.notCalledLabel,T.calledHint);
     if(S.isCalled&&S.sbyType==='other') o+=field(T.called,inp('callTime','time',S.callTime));
     if(S.isCalled||S.sbyType==='airport'){
-      o+='<div class="row">'+field(T.reportIn,inp('reportTime','time',S.reportTime),T.reportInHint)+field(T.reportOut,inp('offTime','time',S.offTime),T.reportOutHint)+'</div>';
+      o+='<div class="row">'+field(T.reportIn,inp('reportTime','time',S.reportTime))+field(T.reportOut,inp('offTime','time',S.offTime))+'</div>';
       o+=field(T.sectors,sel('sectors',[[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8]],S.sectors));
     }
     if(S.isCalled&&S.sbyType==='other'){
       o+=tgl('aug',S.aug,T.augLabel,T.augHint);
       o+=tgl('split',S.split,T.splitLabel,T.sbySplitHint);
     }
-    if(S.sbyType==='airport'){
-      o+=tgl('asbSplit',S.asbSplit,T.asbSplitLabel,T.asbSplitHint);
-      if(S.asbSplit)o+='<div class="row">'+field(T.breakLabel,inp('sBreakH','number',S.breakH,'min="0" max="12" step="0.5"'))+field(T.breakStartLabel,inp('sBreakStart','time',S.breakStart),T.breakStartHint)+'</div>';
-    }
     o+='</div>';
     // Timeline
     const tlEnd=c.called?c.om:c.se;const span=Math.max(tlEnd-c.s0+60,480);
     const pc=m=>Math.min(100,Math.max(0,(m-c.s0)/span*100));
-    let sbyMarkers=[{p:pc(c.s0),l:'SBY',ti:tfmt(c.s0),ac:false}];
+    o+='<div class="card"><div class="disrupt-title">TIMELINE</div><div style="position:relative;height:64px"><div class="tl-bar">';
     if(!c.called&&S.sbyType==='other'){
-      sbyMarkers.push({p:pc(c.se),l:T.sbyEnd,ti:tfmt(c.se),ac:false});
+      o+='<div class="tl-seg" style="left:'+pc(c.s0)+'%;width:'+(pc(c.se)-pc(c.s0))+'%;background:#3D5A4C"></div>';
     }else{
-      if(S.sbyType==='other')sbyMarkers.push({p:pc(c.cm),l:T.called,ti:tfmt(c.cm),ac:true});
-      sbyMarkers.push({p:pc(c.rm),l:'Report',ti:tfmt(c.rm),ac:false});
-      sbyMarkers.push({p:pc(c.om),l:'Off',ti:tfmt(c.om),ac:false});
-    }
-    const sbyColl=tlCollide(sbyMarkers.map(m=>m.p));
-    o+='<div class="card"><div class="disrupt-title">TIMELINE</div><div style="position:relative;height:'+tlHeight(sbyColl.row)+'px"><div class="tl-bar">';
-    if(!c.called&&S.sbyType==='other'){
-      o+='<div class="tl-seg" style="left:'+pc(c.s0)+'%;width:'+(pc(c.se)-pc(c.s0))+'%;background:var(--surface-3)"></div>';
-    }else{
-      o+='<div class="tl-seg" style="left:'+pc(c.s0)+'%;width:'+(pc(c.cm)-pc(c.s0))+'%;background:var(--surface-3)"></div>';
-      if(S.sbyType==='other')o+='<div class="tl-seg" style="left:'+pc(c.cm)+'%;width:'+Math.max(0,pc(c.rm)-pc(c.cm))+'%;background:#3D5646"></div>';
-      o+='<div class="tl-seg" style="left:'+pc(c.rm)+'%;width:'+Math.max(0,pc(c.om)-pc(c.rm))+'%;background:'+(c.fdpOk?'var(--gold)':'var(--red)')+'"></div>';
+      o+='<div class="tl-seg" style="left:'+pc(c.s0)+'%;width:'+(pc(c.cm)-pc(c.s0))+'%;background:#3D5A4C"></div>';
+      if(S.sbyType==='other')o+='<div class="tl-seg" style="left:'+pc(c.cm)+'%;width:'+Math.max(0,pc(c.rm)-pc(c.cm))+'%;background:#5A7A68"></div>';
+      o+='<div class="tl-seg" style="left:'+pc(c.rm)+'%;width:'+Math.max(0,pc(c.om)-pc(c.rm))+'%;background:'+(c.fdpOk?'#E8A33D':'#D9624A')+'"></div>';
     }
     o+='</div>';
-    sbyMarkers.forEach((m,i)=>{o+=tlMk(m.p,m.l,m.ti,m.ac,sbyColl.anchor[i],sbyColl.row[i])});
+    // Markers
+    const mk=(p,l,ti,ac)=>'<div class="tl-mk" style="left:'+p+'%"><div class="tl-mk-line" style="background:'+(ac?'#E8A33D':'#5C7A6A')+'"></div><div class="tl-mk-time" style="color:'+(ac?'#E8A33D':'#9DB5A8')+'">'+ti+'</div><div class="tl-mk-label">'+l+'</div></div>';
+    o+=mk(pc(c.s0),'SBY',tfmt(c.s0));
+    if(!c.called&&S.sbyType==='other'){o+=mk(pc(c.se),T.sbyEnd,tfmt(c.se))}
+    else{if(S.sbyType==='other')o+=mk(pc(c.cm),T.called,tfmt(c.cm),true);o+=mk(pc(c.rm),'Report',tfmt(c.rm));o+=mk(pc(c.om),'Off',tfmt(c.om))}
     o+='</div></div>';
-
-    // Hero verdict (top of results, most prominent)
-    const allOk=c.called?(c.fdpOk&&c.awOk&&c.sbyOk&&c.respOk):c.sbyOk;
-    const fails=[c.called&&!c.fdpOk&&T.fdpOverLimit,c.called&&!c.awOk&&T.awakeOverMax,!c.sbyOk&&(c.type==='airport'?T.asbOverMax:T.sbyOver16),c.called&&!c.respOk&&T.respTooShort].filter(Boolean).join('. ');
-    o+='<div class="hero '+(allOk?'ok':'fail')+'"><div class="hero-icon">'+(allOk?'✓':'✕')+'</div><div class="hero-title">'+(allOk?T.legalLabel:T.illegalLabel)+'</div>'+(!allOk?'<div class="hero-sub">'+fails+'</div>':'<div class="hero-sub">'+T.sbyVerdictOk+'</div>')+'</div>';
-
-    if(c.called){
-      o+='<div class="card gauge-card">'+gaugeSVG(c.actFDP,c.redLimit,c.fdpOk,false)+
-        '<div class="gauge-readout" style="font-size:32px;color:'+(c.fdpOk?'var(--text-1)':'var(--red)')+';margin-top:-40px">'+fmt(c.actFDP)+'</div>'+
-        '<div class="gauge-lbl">'+T.actualFDP+' · '+T.remaining+' '+fmt(Math.max(0,c.redLimit-c.actFDP))+'</div>'+
-        '<div class="gauge-status" style="color:'+(c.fdpOk?'var(--green)':'var(--red)')+'">'+(c.fdpOk?T.ok:T.over)+' · '+T.redLimit+' '+fmt(c.redLimit)+'</div></div>';
-    }
-
+    // Results
     o+='<div class="grid">';
     o+=stat(c.type==='airport'?T.sbyBeforeASB:(c.called?T.sbyBeforeOther:T.sbyFullPeriod),fmt(c.sbyBefore),c.sbyOk?T.withinLimits:T.overLimit,false,!c.sbyOk,T.hintSbyToReport);
     if(c.called){
-      if(c.asbSplit){
-        o+=stat(T.baseFDP,fmt(c.baseFDP),S.sectors+' '+T.sekt+', '+S.reportTime,false,false,T.hintBaseFDP);
-        o+=stat(T.redLimit,fmt(c.redLimit),c.spOk?fmt(c.countableMin)+' '+T.splitCountedSuffix:T.noExtension,true,false,T.asbSplitHint);
-        o+=stat(T.asbCombined,fmt(c.totalAwake),c.awOk?T.within+' '+fmt(c.awLim):T.over+' '+fmt(c.awLim),false,!c.awOk,T.hintAwake);
-      }else{
-        o+=stat(T.reduction,fmt(c.red),c.nc>0?fmt(c.nc)+' '+T.nightCreditSub:c.type==='airport'?T.asbReduces:T.noNightCredit,false,false,T.hintReduction);
-        o+=stat(T.baseFDP,fmt(c.baseFDP),S.sectors+' '+T.sekt+', '+S.reportTime,false,false,T.hintBaseFDP);
-        o+=stat(T.redLimit,fmt(c.redLimit),T.afterReduction,true,false,T.hintRedLimit);
-        o+=stat(c.type==='airport'?T.asbCombined:T.awakeTime,fmt(c.totalAwake),c.awOk?T.within+' '+fmt(c.awLim):T.over+' '+fmt(c.awLim),false,!c.awOk,T.hintAwake);
-      }
+      o+=stat(T.reduction,fmt(c.red),c.nc>0?fmt(c.nc)+' '+T.nightCreditSub:c.type==='airport'?T.asbReduces:T.noNightCredit,false,false,T.hintReduction);
+      o+=stat(T.baseFDP,fmt(c.baseFDP),S.sectors+' '+T.sekt+', '+S.reportTime,false,false,T.hintBaseFDP);
+      o+=stat(T.redLimit,fmt(c.redLimit),T.afterReduction,true,false,T.hintRedLimit);
+      o+=stat(T.actualFDP,fmt(c.actFDP),c.fdpOk?T.ok:T.over,false,!c.fdpOk,T.hintActFDP);
+      o+=stat(c.type==='airport'?T.asbCombined:T.awakeTime,fmt(c.totalAwake),c.awOk?T.within+' '+fmt(c.awLim):T.over+' '+fmt(c.awLim),false,!c.awOk,T.hintAwake);
     }
     o+=stat(T.dutyCred,fmt(c.dc),c.type==='airport'?T.asbFullDuty:(c.called?T.sby25:T.sby25full),false,false,T.hintDutyCred);
     o+='</div>';
@@ -518,116 +275,90 @@ function render(){
 
   }else{
     const c=calcNorm();
-    o+='<div class="subtabs"><button class="subtab'+(nView==='simple'?' on':'')+'" data-nview="simple">'+T.viewSimple+'</button><button class="subtab'+(nView==='advanced'?' on':'')+'" data-nview="advanced">'+T.viewAdvanced+'</button></div>';
-
+    const allOk=c.fdpOk&&c.rOk;
+    const fails=[!c.fdpOk&&T.fdpOverLimit,!c.rOk&&T.restUnderMin].filter(Boolean).join('. ');
+    
+    o+='<div class="tabs" style="margin-bottom:12px"><button class="tab" style="'+(nView==='simple'?'background:#3D5A4C;color:#E9E4D6':'')+'" data-nview="simple">'+T.viewSimple+'</button><button class="tab" style="'+(nView==='advanced'?'background:#3D5A4C;color:#E9E4D6':'')+'" data-nview="advanced">'+T.viewAdvanced+'</button></div>';
+    
+    o+='<div class="verdict '+(allOk?'ok':'fail')+'" style="margin-bottom:16px"><div class="verdict-dot"></div><div><div class="verdict-title">'+(allOk?T.normVerdictOk:T.breaksLimit)+'</div>'+(!allOk?'<div class="verdict-sub">'+fails+'</div>':'')+'</div></div>';
+    
     if(nView==='simple'){
       const sbase=lT2(N.report,N.sectors);const soff=tm(N.report)+sbase;
-      o+='<div class="card"><div class="card-title">SETUP</div>';
-      o+='<div class="row">'+field(T.reportIn,inp('nReport','time',N.report),T.reportInHint)+field(T.sectors,sel('nSectors',[[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8]],N.sectors))+'</div>';
+      o+='<div class="card">';
+      o+='<div class="row">'+field(T.reportIn,inp('nReport','time',N.report))+field(T.sectors,sel('nSectors',[[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8]],N.sectors))+'</div>';
       o+='</div>';
-      const stm=tm(N.report),sSpan=sbase+60;
+      // Simple Timeline
+      {const stm=tm(N.report),sSpan=sbase+60;
       const spc=m=>Math.min(100,Math.max(0,(m-stm)/sSpan*100));
-      const smkColl=tlCollide([0,spc(soff)]);
-      o+='<div class="card"><div class="disrupt-title">TIMELINE</div><div style="position:relative;height:'+tlHeight(smkColl.row)+'px"><div class="tl-bar">';
-      o+='<div class="tl-seg" style="left:0%;width:'+spc(soff)+'%;background:var(--gold);opacity:.75"></div>';
+      const smk=(p,l,ti,ac)=>'<div class="tl-mk" style="left:'+p+'%"><div class="tl-mk-line" style="background:'+(ac?'#E8A33D':'#5C7A6A')+'"></div><div class="tl-mk-time" style="color:'+(ac?'#E8A33D':'#9DB5A8')+'">'+ti+'</div><div class="tl-mk-label">'+l+'</div></div>';
+      o+='<div class="card"><div class="disrupt-title">TIMELINE</div><div style="position:relative;height:64px"><div class="tl-bar">';
+      o+='<div class="tl-seg" style="left:0%;width:'+spc(soff)+'%;background:#E8A33D;opacity:0.7;border-radius:5px"></div>';
       o+='</div>';
-      o+=tlMk(0,'Report',tfmt(stm),false,smkColl.anchor[0],smkColl.row[0]);
-      o+=tlMk(spc(soff),'Max',tfmt(soff),true,smkColl.anchor[1],smkColl.row[1]);
-      o+='</div></div>';
-      o+='<div class="card gauge-card">'+gaugeSVG(sbase,sbase,true,false)+
-        '<div class="gauge-readout" style="font-size:32px;color:var(--text-1);margin-top:-40px">'+fmt(sbase)+'</div>'+
-        '<div class="gauge-lbl">'+T.baseFDP+' · '+N.sectors+' '+T.sekt+'</div>'+
-        '<div class="gauge-status" style="color:var(--gold-bright)">'+T.latestOff+' '+tfmt(soff)+' ('+T.latestOffSub+')</div></div>';
+      o+=smk(0,'Report',tfmt(stm));
+      o+=smk(spc(soff),'Max',tfmt(soff),true);
+      o+='</div></div>';}
+      o+='<div class="grid">';
+      o+=stat(T.baseFDP,fmt(sbase),N.sectors+' '+T.sekt+', '+N.report,false,false,T.hintBaseFDP);
+      o+=stat(T.latestOff,tfmt(soff),T.latestOffSub,true,false,T.hintActFDP);
+      o+='</div>';
       o+='<div class="note">'+T.simpleNote+'</div>';
     }else{
-      o+='<div class="card"><div class="card-title">SETUP</div>';
-      o+='<div class="row">'+field(T.reportIn,inp('nReport','time',N.report),T.reportInHint)+field(T.reportOut,inp('nOff','time',N.off),T.reportOutHint)+'</div>';
-      o+='<div class="row">'+field(T.sectors,sel('nSectors',[[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8]],N.sectors));
-      o+=field(T.tzLabel,inp('nTz','number',N.tz,'min="0" max="12" step="1"'),T.tzHint)+'</div>';
-      o+=field(T.rotLabel,sel('nHrs',[[0,T.rotToday],[12,T.rot12],[24,T.rot24],[36,T.rot36],[48,T.rot48],[60,T.rot60],[72,T.rot72],[96,T.rot96],[120,T.rot120]],N.hrs),T.rotHint);
-      o+='<div class="row">'+field(T.prevDutyLabel,inp('nPrevDuty','number',N.prevDuty,'min="0" max="24" step="0.5"'),T.prevDutyHint)+field(T.restBefore,inp('nPrevRest','number',N.prevRest,'min="0" max="48" step="0.5"'))+'</div>';
-      o+=field(T.restAfter,inp('nPostRest','number',N.postRest,'min="0" max="48" step="0.5"'));
-      o+=tgl('nAway',N.away,T.awayToggle,T.awayHint);
-      o+='<div class="sep"></div>';
-      // Progressive disclosure: extensions & discretion tucked behind accordion
-      let extraBody='';
-      extraBody+=field(T.ifrLabel,sel('nRestFac',[['none',T.ifrNone],['class3',T.ifrC3],['class2',T.ifrC2],['class1',T.ifrC1]],N.restFac),T.ifrHint);
-      extraBody+=field(T.extraCrew,sel('nExtraCrew',[[0,'0'],[1,'1'],[2,'2']],N.extraCrew));
-      if(N.restFac!=='none'&&N.extraCrew>0&&N.sectors<=2){extraBody+=tgl('nLongSector',N.longSector,T.longSectorLabel,T.longSectorHint)}
-      extraBody+=tgl('nSplit',N.split,T.splitDutyLabel,T.splitHint);
-      if(N.split)extraBody+='<div class="row">'+field(T.breakLabel,inp('nBreakH','number',N.breakH,'min="0" max="12" step="0.5"'))+field(T.breakStartLabel,inp('nBreakStart','time',N.breakStart),T.breakStartHint)+'</div>';
-      extraBody+=tgl('nExt',N.ext,T.extLabel,T.extHint);
-      if(c.extNA)extraBody+='<div style="font-size:12px;color:var(--red)">'+T.extNotAllowed+'</div>';
-      extraBody+=tgl('nCD',N.cd,T.cdLabel,T.cdHint);
-      const activeChips=[N.restFac!=='none'&&c.ifrOk&&'IFR',c.longSectorOk&&'+1h sector',c.spOk&&'Split',c.extAp&&'Ext',N.cd&&'CD'].filter(Boolean);
-      const extSub=activeChips.length?activeChips.join(' · '):T.advExtrasSub;
-      o+=accordion('extras',T.advExtras,extSub,extraBody);
-      o+='</div>';
-      // Acclimatisation badge
-      o+='<div class="badge"><span class="badge-code" style="color:'+(c.acc.code==='X'?'var(--red)':'var(--gold)')+'">'+c.acc.code+'</span><div><div>'+c.acc.label+'</div><div class="badge-sub">'+c.tbl+'</div></div></div>';
-      // Disruptive
-      const isD=c.dis.early||c.dis.late||c.dis.night;
-      const disHid=hintId(T.disruptiveHint);
-      o+='<div class="disrupt"><div class="disrupt-title" style="display:flex;align-items:center;justify-content:space-between">'+T.disruptiveTitle+hintBtn(disHid)+'</div>';
-      o+=hintBox(disHid,T.disruptiveHint);
-      o+='<span class="tag '+(c.dis.early?'on':'off')+'">'+T.earlyStart+'</span>';
-      o+='<span class="tag '+(c.dis.late?'on':'off')+'">'+T.lateFinish+'</span>';
-      o+='<span class="tag '+(c.dis.night?'on':'off')+'">'+T.nightDuty+'</span>';
-      const lnHid=hintId(T.localNightsHint);
-      o+='<div style="margin-top:9px;font-size:13px;color:var(--text-2);display:flex;align-items:center">'+T.localNights+' ('+N.postRest+'h): <b style="color:var(--gold-bright);margin-left:5px">'+c.pn+'</b>'+hintBtn(lnHid)+'</div>';
-      o+=hintBox(lnHid,T.localNightsHint);
-      if(c.tzHomeApplies){
-        o+='<div style="margin-top:6px;font-size:12px;color:'+(c.tzHomeOk?'var(--green)':'var(--red)')+'">'+(c.tzHomeOk?T.tzHomeOk:T.tzHomeFail)+' ('+T.minRestReq+' '+c.tzHomeReq+')</div>';
-      }
-      const neHid=hintId(T.nextEarlyHint);
-      o+='<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--edge-2)"><div class="tgl" data-tgl="nNextEarly"><div class="tgl-box'+(N.nextEarly?' on':'')+'"><div class="tgl-dot"></div></div><span class="tgl-label">'+T.nextEarlyLabel+'</span>'+hintBtn(neHid)+'</div>'+hintBox(neHid,T.nextEarlyHint)+'</div>';
-      if(c.transitionApplies){
-        o+='<div style="margin-top:6px;font-size:12px;color:'+(c.transitionOk?'var(--green)':'var(--red)')+'">'+(c.transitionOk?T.transitionOk:T.transitionFail)+'</div>';
-      }
-      o+='<div class="disrupt-info">'+(isD?T.disruptiveWarn:T.notDisruptive)+'</div></div>';
-      // Timeline
-      {const limEnd=c.rm+c.lim;
-      const tlEnd=Math.max(c.om,limEnd);
-      const tlSpan=Math.max(tlEnd-c.rm+60,300);
-      const apc=m=>Math.min(100,Math.max(0,(m-c.rm)/tlSpan*100));
-      const advMarkers=[{p:0,l:'Report',ti:tfmt(c.rm),ac:false}];
-      const maxP=apc(limEnd),offP=apc(c.om);
-      advMarkers.push({p:maxP,l:'Max',ti:tfmt(limEnd),ac:true});
-      advMarkers.push({p:offP,l:c.fdpOk?'Off':'Off ⚠',ti:tfmt(c.om),ac:!c.fdpOk});
-      const advColl=tlCollide(advMarkers.map(m=>m.p));
-      o+='<div class="card"><div class="disrupt-title">'+T.tlPlannedMax+'</div><div style="position:relative;height:'+tlHeight(advColl.row)+'px"><div class="tl-bar">';
-      o+='<div class="tl-seg" style="left:0%;width:'+apc(limEnd)+'%;background:var(--surface-3)"></div>';
-      if(c.fdpOk){
-        o+='<div class="tl-seg" style="left:0%;width:'+apc(c.om)+'%;background:var(--gold)"></div>';
-      }else{
-        o+='<div class="tl-seg" style="left:0%;width:'+apc(limEnd)+'%;background:var(--gold)"></div>';
-        o+='<div class="tl-seg" style="left:'+apc(limEnd)+'%;width:'+Math.max(0,apc(c.om)-apc(limEnd))+'%;background:var(--red)"></div>';
-      }
-      o+='</div>';
-      advMarkers.forEach((m,i)=>{o+=tlMk(m.p,m.l,m.ti,m.ac,advColl.anchor[i],advColl.row[i])});
-      o+='</div></div>';}
-
-      // Hero verdict (top, most prominent)
-      const allOk=c.fdpOk&&c.rOk&&c.destRestOk&&c.tzHomeOk&&c.transitionOk;
-      const fails=[!c.fdpOk&&T.fdpOverLimit,!c.rOk&&T.restUnderMin,!c.destRestOk&&T.destRestOverLimit,!c.tzHomeOk&&T.tzHomeFail,!c.transitionOk&&T.transitionFail].filter(Boolean).join('. ');
-      o+='<div class="hero '+(allOk?'ok':'fail')+'"><div class="hero-icon">'+(allOk?'✓':'✕')+'</div><div class="hero-title">'+(allOk?T.legalLabel:T.illegalLabel)+'</div>'+(!allOk?'<div class="hero-sub">'+fails+'</div>':'<div class="hero-sub">'+T.normVerdictOk+'</div>')+'</div>';
-
-      // Gauge
-      o+='<div class="card gauge-card">'+gaugeSVG(c.act,c.lim,c.fdpOk,c.fdpOk&&(c.lim-c.act)<30)+
-        '<div class="gauge-readout" style="font-size:32px;color:'+(c.fdpOk?'var(--text-1)':'var(--red)')+';margin-top:-40px">'+fmt(c.act)+'</div>'+
-        '<div class="gauge-lbl">'+T.actualFDP+' · '+T.remaining+' '+fmt(Math.max(0,c.lim-c.act))+'</div>'+
-        '<div class="gauge-status" style="color:'+(c.fdpOk?'var(--green)':'var(--red)')+'">'+(c.fdpOk?T.ok:T.over)+' · '+T.appliedLimit+' '+fmt(c.lim)+'</div></div>';
-
-      o+='<div class="grid">';
-      o+=stat(T.baseFDP,fmt(c.base),N.sectors+' '+T.sekt+', '+N.report,false,false,T.hintBaseFDP);
-      o+=stat(T.appliedLimit,fmt(c.lim),c.src,true,false,T.hintAppliedLim);
-      o+=stat(T.restBeforeLabel,N.prevRest+'h',c.rOk?T.ok+' ('+T.minRestReq+' '+c.minR+'h)':T.underMin+' '+c.minR+'h',false,!c.rOk,T.hintRestBefore);
-      if(c.destRestApplies)o+=stat(T.destRestLabel,N.postRest+'h',c.destRestOk?T.destRestOverMin+' ('+T.minRestReq+' '+fmt(c.destRestMin)+')':T.destRestUnderMin+' '+fmt(c.destRestMin),false,!c.destRestOk,T.destRestHint);
-      o+='</div>';
-      o+='<div class="note">'+T.normSource+'</div>';
+    o+='<div class="card">';
+    o+='<div class="row">'+field(T.reportIn,inp('nReport','time',N.report))+field(T.reportOut,inp('nOff','time',N.off))+'</div>';
+    o+='<div class="row">'+field(T.sectors,sel('nSectors',[[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8]],N.sectors));
+    o+=field(T.tzLabel,sel('nTz',[[0,T.tz0],[1,T.tz1],[2,T.tz2],[3,T.tz3]],N.tz),T.tzHint)+'</div>';
+    o+=field(T.rotLabel,sel('nHrs',[[0,T.rotToday],[12,T.rot12],[24,T.rot24],[36,T.rot36],[48,T.rot48],[60,T.rot60],[72,T.rot72],[96,T.rot96],[120,T.rot120]],N.hrs),T.rotHint);
+    o+='<div class="row">'+field(T.prevDutyLabel,inp('nPrevDuty','number',N.prevDuty,'min="0" max="24" step="0.5"'),T.prevDutyHint)+field(T.restBefore,inp('nPrevRest','number',N.prevRest,'min="0" max="48" step="0.5"'))+'</div>';
+    o+=field(T.restAfter,inp('nPostRest','number',N.postRest,'min="0" max="48" step="0.5"'));
+    o+=tgl('nAway',N.away,T.awayToggle,T.awayHint);
+    o+='<div class="sep"></div>';
+    o+=field(T.ifrLabel,sel('nRestFac',[['none',T.ifrNone],['class3','Class 3'],['class2','Class 2'],['class1','Class 1']],N.restFac));
+    o+=field(T.extraCrew,sel('nExtraCrew',[[0,'0'],[1,'1'],[2,'2']],N.extraCrew));
+    o+=tgl('nSplit',N.split,T.splitDutyLabel,T.splitHint);
+    if(N.split)o+=field(T.breakLabel,inp('nBreakH','number',N.breakH,'min="0" max="12" step="0.5"'));
+    o+=tgl('nExt',N.ext,T.extLabel,T.extHint);
+    if(c.extNA)o+='<div style="font-size:12px;color:#D9624A">'+T.extNotAllowed+'</div>';
+    o+=tgl('nCD',N.cd,T.cdLabel,T.cdHint);
+    o+='</div>';
+    // Acclimatisation
+    o+='<div class="badge"><span class="badge-code" style="color:'+(c.acc.code==='X'?'#D9624A':'#E8A33D')+'">'+c.acc.code+'</span>'+c.acc.label+'<div class="badge-sub">'+c.tbl+'</div></div>';
+    // Disruptive
+    const isD=c.dis.early||c.dis.late||c.dis.night;
+    o+='<div class="disrupt"><div class="disrupt-title">'+T.disruptiveTitle+'</div>';
+    o+='<span class="tag '+(c.dis.early?'on':'off')+'">'+T.earlyStart+'</span>';
+    o+='<span class="tag '+(c.dis.late?'on':'off')+'">'+T.lateFinish+'</span>';
+    o+='<span class="tag '+(c.dis.night?'on':'off')+'">'+T.nightDuty+'</span>';
+    o+='<div style="margin-top:8px;font-size:13px">'+T.localNights+' ('+N.postRest+'h): <b style="color:#E8A33D">'+c.pn+'</b></div>';
+    o+='<div class="disrupt-info">'+(isD?T.disruptiveWarn:T.notDisruptive)+'</div></div>';
+    // Advanced Timeline
+    {const limEnd=c.rm+c.lim;
+    const tlEnd=Math.max(c.om,limEnd);
+    const tlSpan=Math.max(tlEnd-c.rm+60,300);
+    const apc=m=>Math.min(100,Math.max(0,(m-c.rm)/tlSpan*100));
+    const amk=(p,l,ti,ac)=>'<div class="tl-mk" style="left:'+p+'%"><div class="tl-mk-line" style="background:'+(ac?'#E8A33D':'#5C7A6A')+'"></div><div class="tl-mk-time" style="color:'+(ac?'#E8A33D':'#9DB5A8')+'">'+ti+'</div><div class="tl-mk-label">'+l+'</div></div>';
+    o+='<div class="card"><div class="disrupt-title">TIMELINE · PLANERAD vs MAX</div><div style="position:relative;height:64px"><div class="tl-bar">';
+    o+='<div class="tl-seg" style="left:0%;width:'+apc(limEnd)+'%;background:#2C463C;border-radius:5px"></div>';
+    if(c.fdpOk){
+      o+='<div class="tl-seg" style="left:0%;width:'+apc(c.om)+'%;background:#E8A33D;border-radius:5px"></div>';
+    }else{
+      o+='<div class="tl-seg" style="left:0%;width:'+apc(limEnd)+'%;background:#E8A33D;border-radius:5px 0 0 5px"></div>';
+      o+='<div class="tl-seg" style="left:'+apc(limEnd)+'%;width:'+Math.max(0,apc(c.om)-apc(limEnd))+'%;background:#D9624A;border-radius:0 5px 5px 0"></div>';
+    }
+    o+='</div>';
+    o+=amk(0,'Report',tfmt(c.rm));
+    o+=amk(apc(limEnd),'Max',tfmt(limEnd),true);
+    o+=amk(apc(c.om),c.fdpOk?'Off':'Off ⚠',tfmt(c.om),!c.fdpOk);
+    o+='</div></div>';}
+    // Results
+    o+='<div class="grid">';
+    o+=stat(T.actualFDP,fmt(c.act),c.fdpOk?T.ok:T.over,false,!c.fdpOk,T.hintActFDP);
+    o+=stat(T.baseFDP,fmt(c.base),N.sectors+' '+T.sekt+', '+N.report,false,false,T.hintBaseFDP);
+    o+=stat(T.appliedLimit,fmt(c.lim),c.src,true,false,T.hintAppliedLim);
+    o+=stat(T.restBeforeLabel,N.prevRest+'h',c.rOk?T.ok+' ('+T.minRestReq+' '+c.minR+'h)':T.underMin+' '+c.minR+'h',false,!c.rOk,T.hintRestBefore);
+    o+='</div>';
+    o+='<div class="note">'+T.normSource+'</div>';
     }
   }
-  o+='<div class="disclaimer"><div class="disclaimer-title">'+T.disclaimerTitle+'</div><div>'+T.disclaimerText+'</div><div class="ver">FDP-'+(lang==='sv'?'räknare':'calculator')+' · v'+APP_VERSION+'</div></div>';
   document.getElementById('app').innerHTML=o;
   bind();
 }
@@ -635,59 +366,31 @@ function render(){
 // ─── Event binding ──────────────────────────────────────────────────────
 function bind(){
   const $=id=>document.getElementById(id);
-  $('langBtn')?.addEventListener('click',()=>{lang=lang==='sv'?'en':'sv';try{localStorage.setItem('fdpLang',lang)}catch(e){}render()});
-  $('themeBtn')?.addEventListener('click',()=>{
-    theme=theme==='gold'?'blue':'gold';
-    try{localStorage.setItem('fdpTheme',theme)}catch(e){}
-    render()
-  });
-  document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{mode=b.dataset.mode;saveState();render()}));
-  document.querySelectorAll('[data-nview]').forEach(b=>b.addEventListener('click',()=>{nView=b.dataset.nview;saveState();render()}));
-  document.querySelectorAll('[data-acc]').forEach(b=>b.addEventListener('click',()=>togAcc(b.dataset.acc)));
-  // Punkt 5: tömda/ogiltiga nummerfält får inte bli NaN i beräkningarna
-  const readVal=(el,type)=>{if(type==='int'||type==='float'){const v=+el.value;return Number.isFinite(v)?v:0}return el.value};
-  const sMap={sbyType:[S,'sbyType'],sbyStart:[S,'sbyStart'],sbyEnd:[S,'sbyEnd'],callTime:[S,'callTime'],reportTime:[S,'reportTime'],offTime:[S,'offTime'],sectors:[S,'sectors','int'],sBreakH:[S,'breakH','float'],sBreakStart:[S,'breakStart']};
-  Object.entries(sMap).forEach(([id,[obj,key,type]])=>{const el=$(id);if(el)el.addEventListener('change',()=>{obj[key]=readVal(el,type);saveState();render()})});
-  const nMap={nReport:[N,'report'],nOff:[N,'off'],nSectors:[N,'sectors','int'],nTz:[N,'tz','int'],nHrs:[N,'hrs','int'],nRestFac:[N,'restFac'],nExtraCrew:[N,'extraCrew','int'],nBreakH:[N,'breakH','float'],nBreakStart:[N,'breakStart'],nPrevRest:[N,'prevRest','float'],nPrevDuty:[N,'prevDuty','float'],nPostRest:[N,'postRest','float']};
-  Object.entries(nMap).forEach(([id,[obj,key,type]])=>{const el=$(id);if(el)el.addEventListener('change',()=>{obj[key]=readVal(el,type);saveState();render()})});
+  $('langBtn')?.addEventListener('click',()=>{lang=lang==='sv'?'en':'sv';render()});
+  document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{mode=b.dataset.mode;render()}));
+  document.querySelectorAll('[data-nview]').forEach(b=>b.addEventListener('click',()=>{nView=b.dataset.nview;render()}));
+  // Standby
+  const sMap={sbyType:[S,'sbyType'],sbyStart:[S,'sbyStart'],sbyEnd:[S,'sbyEnd'],callTime:[S,'callTime'],reportTime:[S,'reportTime'],offTime:[S,'offTime'],sectors:[S,'sectors','int']};
+  Object.entries(sMap).forEach(([id,[obj,key,type]])=>{const el=$(id);if(el)el.addEventListener('change',()=>{obj[key]=type==='int'?+el.value:el.value;render()})});
+  // Normal
+  const nMap={nReport:[N,'report'],nOff:[N,'off'],nSectors:[N,'sectors','int'],nTz:[N,'tz','int'],nHrs:[N,'hrs','int'],nRestFac:[N,'restFac'],nExtraCrew:[N,'extraCrew','int'],nBreakH:[N,'breakH','float'],nPrevRest:[N,'prevRest','float'],nPrevDuty:[N,'prevDuty','float'],nPostRest:[N,'postRest','float']};
+  Object.entries(nMap).forEach(([id,[obj,key,type]])=>{const el=$(id);if(el)el.addEventListener('change',()=>{obj[key]=type==='int'?+el.value:type==='float'?+el.value:el.value;render()})});
+  // Toggles
   document.querySelectorAll('[data-tgl]').forEach(el=>{el.addEventListener('click',()=>{
     const k=el.dataset.tgl;
     if(k==='isCalled')S.isCalled=!S.isCalled;
     else if(k==='aug')S.aug=!S.aug;
     else if(k==='split')S.split=!S.split;
-    else if(k==='asbSplit')S.asbSplit=!S.asbSplit;
     else if(k==='nAway')N.away=!N.away;
     else if(k==='nSplit')N.split=!N.split;
     else if(k==='nExt')N.ext=!N.ext;
     else if(k==='nCD')N.cd=!N.cd;
-    else if(k==='nLongSector')N.longSector=!N.longSector;
-    else if(k==='nNextEarly')N.nextEarly=!N.nextEarly;
-    saveState();
     render()})});
 }
 
 render();
 
-// Punkt 8: visa en toast när en ny service worker aktiverats (dvs efter att nya filer
-// laddats upp och sw.js ändrats). skipWaiting+claim i sw.js gör att nya SW:n tar över
-// direkt — controller-kollen filtrerar bort den allra första installationen.
-function showUpdateToast(){
-  if(document.getElementById('updToast'))return;
-  const d=document.createElement('div');d.className='toast';d.id='updToast';
-  d.textContent=t().updateReady;
-  d.addEventListener('click',()=>location.reload());
-  document.body.appendChild(d);
-}
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('./sw.js').then(reg=>{
-    reg.addEventListener('updatefound',()=>{
-      const nw=reg.installing;if(!nw)return;
-      nw.addEventListener('statechange',()=>{
-        if(nw.state==='activated'&&navigator.serviceWorker.controller)showUpdateToast();
-      });
-    });
-  }).catch(()=>{});
-}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{})}
 </script>
 </body>
 </html>
