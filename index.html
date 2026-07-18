@@ -86,10 +86,14 @@ h1{font-size:19px;font-weight:700;color:var(--text-1);letter-spacing:-.01em}
 /* ── Inputs ── */
 input[type="time"],input[type="number"],select{background:var(--surface-2);border:1px solid var(--edge-2);color:var(--text-1);border-radius:var(--r-sm);padding:14px 15px;font-family:var(--mono);font-size:16px;width:100%;min-width:0;max-width:100%;box-sizing:border-box;min-height:52px;-webkit-appearance:none;appearance:none;display:block;transition:border-color .18s ease,box-shadow .18s ease,background .18s ease}
 input:focus,select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(var(--accent-rgb),.18);background:var(--surface-3)}
+button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.info-i:focus-visible{outline-offset:1px}
+input.invalid{border-color:var(--red);box-shadow:0 0 0 3px rgba(226,104,90,.18)}
+input.invalid:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(226,104,90,.25)}
 select{-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23D4A24C' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
 
 /* ── Toggles ── */
-.tgl{display:flex;align-items:center;gap:13px;cursor:pointer;user-select:none;min-height:48px}
+.tgl{display:flex;align-items:center;gap:13px;cursor:pointer;user-select:none;min-height:48px;background:none;border:none;padding:0;text-align:left;font:inherit;color:inherit}
 .tgl:active .tgl-box{transform:scale(.94)}
 .tgl-box{width:46px;height:27px;border-radius:14px;background:var(--surface-2);border:1px solid var(--edge-2);position:relative;transition:all .22s cubic-bezier(.4,0,.2,1);flex-shrink:0}
 .tgl-box.on{background:linear-gradient(155deg,var(--gold-bright),var(--gold));border-color:transparent;box-shadow:0 0 10px rgba(var(--accent-rgb),.32)}
@@ -99,12 +103,12 @@ select{-webkit-appearance:none;appearance:none;background-image:url("data:image/
 .tgl-box.on + .tgl-label{color:var(--text-1)}
 
 /* ── Info hint chips ── */
-.info-i{display:inline-flex;width:17px;height:17px;border:1px solid var(--text-3);border-radius:50%;color:var(--text-2);font-size:10px;align-items:center;justify-content:center;margin-left:7px;cursor:pointer;font-family:var(--mono);flex-shrink:0;user-select:none;transition:all .18s ease}
+.info-i{display:inline-flex;width:17px;height:17px;border:1px solid var(--text-3);border-radius:50%;color:var(--text-2);font-size:10px;align-items:center;justify-content:center;margin-left:7px;cursor:pointer;font-family:var(--mono);flex-shrink:0;user-select:none;transition:all .18s ease;background:none;padding:0}
 .hint-box{font-size:12.5px;color:var(--text-2);line-height:1.55;margin-top:0;max-height:0;opacity:0;overflow:hidden;padding:0 13px;border-left:2px solid var(--gold);border-radius:0 var(--r-sm) var(--r-sm) 0;background:rgba(var(--accent-rgb),.055);transition:max-height .35s cubic-bezier(.4,0,.2,1),opacity .3s ease,padding .3s ease,margin-top .3s ease}
 .hint-box.open{max-height:420px;opacity:1;padding:10px 13px;margin-top:9px;overflow-y:auto}
 
 /* ── Accordion (progressive disclosure) ── */
-.accbtn{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:2px 0;user-select:none}
+.accbtn{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:2px 0;user-select:none;background:none;border:none;width:100%;text-align:left;font:inherit;color:inherit}
 .accbtn-txt{display:flex;flex-direction:column;gap:3px}
 .accbtn-title{font-size:14px;font-weight:600;color:var(--text-1);display:flex;align-items:center;gap:8px}
 .accbtn-dot{width:6px;height:6px;border-radius:50%;background:var(--gold)}
@@ -188,6 +192,18 @@ select{-webkit-appearance:none;appearance:none;background-image:url("data:image/
   .hero-title{font-size:20px}
 }
 @media(min-width:480px){.wrap{padding-top:16px}}
+@media print{
+  body{background:#fff;color:#000;padding:0}
+  .tabs-wrap,.lang-btn,#themeBtn,.info-i,.chev{display:none!important}
+  .card,.hero,.gauge-card,.stat,.badge,.disrupt,.disclaimer{box-shadow:none!important;backdrop-filter:none!important;border:1px solid #ccc!important;background:#fff!important;break-inside:avoid}
+  .hero-title,.stat-val,.gauge-readout{color:#000!important}
+  .hero.fail{border-color:#c00!important}
+  .hero.ok{border-color:#080!important}
+  .hint-box{max-height:none!important;opacity:1!important;padding:8px 12px!important;margin-top:6px!important;border-left-color:#999!important;background:#f5f5f5!important;color:#333!important}
+  .acc-body{max-height:none!important;opacity:1!important;margin-top:16px!important}
+  input,select{border:1px solid #999!important;color:#000!important;background:#fff!important}
+  a{color:#000!important;text-decoration:underline}
+}
 </style>
 </head>
 <body>
@@ -196,7 +212,7 @@ select{-webkit-appearance:none;appearance:none;background-image:url("data:image/
 <script>
 "use strict";
 let _hid=0;
-window.togHint=function(id,el){const h=document.getElementById(id);h.classList.toggle('open');const open=h.classList.contains('open');el.style.borderColor=open?'var(--gold)':'var(--text-3)';el.style.color=open?'var(--gold)':'var(--text-2)';el.style.transform=open?'scale(1.12)':'scale(1)'};
+window.togHint=function(id,el){const h=document.getElementById(id);h.classList.toggle('open');const open=h.classList.contains('open');el.style.borderColor=open?'var(--gold)':'var(--text-3)';el.style.color=open?'var(--gold)':'var(--text-2)';el.style.transform=open?'scale(1.12)':'scale(1)';el.setAttribute('aria-expanded',open?'true':'false')};
 window.togAcc=function(key){ACC[key]=!ACC[key];render()};
 
 // ─── i18n ───────────────────────────────────────────────────────────────
@@ -214,7 +230,7 @@ function lT2(rt,s){const rm=tm(rt);const b=T2.find(b=>{const f=b.f,t=b.t;return 
 function lT3(s){const i=Math.min(Math.max(s,1),8)<=2?0:Math.min(s,8)-2;return T3[Math.min(i,T3.length-1)]}
 
 // ─── Helpers (unchanged) ─────────────────────────────────────────────────
-function tm(t){const p=t.split(':');return(+p[0])*60+(+p[1])}
+function tm(t){if(!t||t.indexOf(':')===-1)return 0;const p=t.split(':');const h=+p[0],m=+p[1];return(Number.isFinite(h)?h:0)*60+(Number.isFinite(m)?m:0)}
 function fmt(m){const s=m<0?'-':'';const a=Math.abs(Math.round(m));return s+Math.floor(a/60)+':'+String(a%60).padStart(2,'0')}
 function tfmt(m){m=((m%1440)+1440)%1440;return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0')}
 function nightCredit(s0,end){const st=((s0%1440)+1440)%1440;if(!(st>=1380||st<420))return 0;let c=0;for(let m=s0;m<end;m++){const n=((m%1440)+1440)%1440;if(n>=1380||n<420)c++}return c}
@@ -334,7 +350,7 @@ function calcNorm(){
   return{rm,om,act,base,lim,src,tbl,fdpOk,acc,rOk,minR,bf,dis,pn,extNA,ifrOk,spOk,spCountableMin,extAp:extAp&&extVal!==null,cdCap,longSectorOk,destRestApplies,destRestMin,destRestOk,tzApplies,tzHomeApplies,tzHomeReq,tzHomeOk,isLateOrNight,transitionApplies,transitionOk}}
 
 // ─── Render primitives ────────────────────────────────────────────────
-function stat(lbl,val,sub,accent,bad,hint,warn){const hid=hint?'h'+(_hid++):'';const iBtn=hint?'<span class="info-i" onclick="event.stopPropagation();togHint(\''+hid+'\',this)">i</span>':'';const hBox=hint?'<div class="hint-box" id="'+hid+'">'+hint+'</div>':'';const cls=bad?' bad':warn?' warn':'';return'<div class="stat'+cls+'"><div class="stat-lbl">'+lbl+iBtn+'</div><div class="stat-val'+cls+(accent&&!bad&&!warn?' accent':'')+'">'+val+'</div><div class="stat-sub'+cls+'">'+sub+'</div>'+hBox+'</div>'}
+function stat(lbl,val,sub,accent,bad,hint,warn){const hid=hint?'h'+(_hid++):'';const iBtn=hint?'<button type="button" class="info-i" aria-expanded="false" aria-label="More info" onclick="event.stopPropagation();togHint(\''+hid+'\',this)">i</button>':'';const hBox=hint?'<div class="hint-box" id="'+hid+'">'+hint+'</div>':'';const cls=bad?' bad':warn?' warn':'';return'<div class="stat'+cls+'"><div class="stat-lbl">'+lbl+iBtn+'</div><div class="stat-val'+cls+(accent&&!bad&&!warn?' accent':'')+'">'+val+'</div><div class="stat-sub'+cls+'">'+sub+'</div>'+hBox+'</div>'}
 // Dynamic, worked-example hint builders for the Standby result cards — show the actual
 // numbers from this calculation, step by step, instead of a generic description.
 function hintSteps(T,steps){return steps.map((s,i)=>'<b>'+T.hintStep+' '+(i+1)+':</b> '+s).join('<br>')}
@@ -356,11 +372,11 @@ function redLimitHintDyn(T,c){
 }
 function awakeHintDyn(T,c){return hintSteps(T,[T.hintAwakeCalc+': '+tfmt(c.s0)+' → '+tfmt(c.om)+', −'+fmt(c.nc)+' = <b>'+fmt(c.totalAwake)+'</b>'])+'<br><br>'+T.hintAwake}
 function dutyCredHintDyn(T,c){return hintSteps(T,[T.hintDutyCredCalc+': 25% × '+fmt(c.sbyBefore)+' = <b>'+fmt(c.dc)+'</b>'])}
-function field(lbl,inner,info){const hid='h'+(_hid++);const iBtn=info?'<span class="info-i" onclick="event.stopPropagation();togHint(\''+hid+'\',this)">i</span>':'';const hBox=info?'<div class="hint-box" id="'+hid+'">'+info+'</div>':'';return'<div><div class="fl">'+lbl+iBtn+'</div>'+inner+hBox+'</div>'}
+function field(lbl,inner,info){const hid='h'+(_hid++);const iBtn=info?'<button type="button" class="info-i" aria-expanded="false" aria-label="More info" onclick="event.stopPropagation();togHint(\''+hid+'\',this)">i</button>':'';const hBox=info?'<div class="hint-box" id="'+hid+'">'+info+'</div>':'';return'<div><div class="fl">'+lbl+iBtn+'</div>'+inner+hBox+'</div>'}
 function sel(id,opts,val){return'<select id="'+id+'">'+opts.map(o=>'<option value="'+o[0]+'"'+(String(o[0])===String(val)?' selected':'')+'>'+o[1]+'</option>').join('')+'</select>'}
 function inp(id,type,val,extra){return'<input type="'+type+'" id="'+id+'" value="'+val+'" '+(extra||'')+'>'}
-function tgl(id,on,lbl,hint){const hid='h'+(_hid++);const iBtn=hint?'<span class="info-i" onclick="event.stopPropagation();togHint(\''+hid+'\',this)">i</span>':'';const hBox=hint?'<div class="hint-box" id="'+hid+'">'+hint+'</div>':'';return'<div><div class="tgl" data-tgl="'+id+'"><div class="tgl-box'+(on?' on':'')+'"><div class="tgl-dot"></div></div><span class="tgl-label">'+lbl+'</span>'+iBtn+'</div>'+hBox+'</div>'}
-function accordion(key,title,sub,body){const open=ACC[key];return'<div><div class="accbtn" data-acc="'+key+'"><div class="accbtn-txt"><div class="accbtn-title"><span class="accbtn-dot"></span>'+title+'</div><div class="accbtn-sub">'+sub+'</div></div><div class="chev'+(open?' open':'')+'"><svg viewBox="0 0 10 10" fill="none"><path d="M1 3l4 4 4-4" stroke="#D4A24C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div><div class="acc-body'+(open?' open':'')+'">'+body+'</div></div>'}
+function tgl(id,on,lbl,hint){const hid='h'+(_hid++);const iBtn=hint?'<button type="button" class="info-i" aria-expanded="false" aria-label="More info" onclick="event.stopPropagation();togHint(\''+hid+'\',this)">i</button>':'';const hBox=hint?'<div class="hint-box" id="'+hid+'">'+hint+'</div>':'';return'<div><div style="display:flex;align-items:center;gap:13px"><button type="button" class="tgl" data-tgl="'+id+'" aria-pressed="'+(on?'true':'false')+'" style="flex:1"><span class="tgl-box'+(on?' on':'')+'" aria-hidden="true"><span class="tgl-dot"></span></span><span class="tgl-label">'+lbl+'</span></button>'+iBtn+'</div>'+hBox+'</div>'}
+function accordion(key,title,sub,body){const open=ACC[key];return'<div><button type="button" class="accbtn" data-acc="'+key+'" aria-expanded="'+(open?'true':'false')+'"><div class="accbtn-txt"><div class="accbtn-title"><span class="accbtn-dot" aria-hidden="true"></span>'+title+'</div><div class="accbtn-sub">'+sub+'</div></div><div class="chev'+(open?' open':'')+'" aria-hidden="true"><svg viewBox="0 0 10 10" fill="none"><path d="M1 3l4 4 4-4" stroke="#D4A24C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div></button><div class="acc-body'+(open?' open':'')+'">'+body+'</div></div>'}
 
 // polar helpers for the instrument gauge
 function pol(cx,cy,r,a){const rad=a*Math.PI/180;return[cx+r*Math.cos(rad),cy-r*Math.sin(rad)]}
@@ -445,9 +461,10 @@ function gaugeSVG(actualMin,limitMin,ok,warnClose){
 function render(){
   const T=t();let o='';
   document.documentElement.setAttribute('data-theme',theme);
+  document.documentElement.setAttribute('lang',lang);
   const mcTag=document.querySelector('meta[name="theme-color"]');if(mcTag)mcTag.setAttribute('content',THEME_META[theme]);
   o+='<div class="hdr"><div class="brand"><div class="brand-mark">FDP</div><div><h1>'+T.title+'</h1><div class="ref">'+T.ref+'</div></div></div><div style="display:flex;gap:8px"><button class="lang-btn" id="themeBtn" title="'+T.themeToggle+'">'+(theme==='gold'?'BLUE':'GOLD')+'</button><button class="lang-btn" id="langBtn">'+(lang==='sv'?'EN':'SV')+'</button></div></div>';
-  o+='<div class="tabs-wrap"><div class="tabs"><button class="tab'+(mode==='normal'?' on':'')+'" data-mode="normal">'+T.tabNormal+'</button><button class="tab'+(mode==='standby'?' on':'')+'" data-mode="standby">'+T.tabStandby+'</button></div></div>';
+  o+='<div class="tabs-wrap"><div class="tabs" role="group"><button class="tab'+(mode==='normal'?' on':'')+'" data-mode="normal" aria-pressed="'+(mode==='normal'?'true':'false')+'">'+T.tabNormal+'</button><button class="tab'+(mode==='standby'?' on':'')+'" data-mode="standby" aria-pressed="'+(mode==='standby'?'true':'false')+'">'+T.tabStandby+'</button></div></div>';
 
   if(mode==='standby'){
     const c=calcSby();
@@ -498,7 +515,7 @@ function render(){
     // Hero verdict (top of results, most prominent)
     const allOk=c.called?(c.fdpOk&&c.awOk&&c.sbyOk&&c.respOk):c.sbyOk;
     const fails=[c.called&&!c.fdpOk&&T.fdpOverLimit,c.called&&!c.awOk&&T.awakeOverMax,!c.sbyOk&&(c.type==='airport'?T.asbOverMax:T.sbyOver16),c.called&&!c.respOk&&T.respTooShort].filter(Boolean).join('. ');
-    o+='<div class="hero '+(allOk?'ok':'fail')+'"><div class="hero-icon">'+(allOk?'✓':'✕')+'</div><div class="hero-title">'+(allOk?T.legalLabel:T.illegalLabel)+'</div>'+(!allOk?'<div class="hero-sub">'+fails+'</div>':'<div class="hero-sub">'+T.sbyVerdictOk+'</div>')+'</div>';
+    o+='<div class="hero '+(allOk?'ok':'fail')+'" role="status" aria-live="polite"><div class="hero-icon" aria-hidden="true">'+(allOk?'✓':'✕')+'</div><div class="hero-title">'+(allOk?T.legalLabel:T.illegalLabel)+'</div>'+(!allOk?'<div class="hero-sub">'+fails+'</div>':'<div class="hero-sub">'+T.sbyVerdictOk+'</div>')+'</div>';
 
     if(c.called){
       o+='<div class="card gauge-card">'+gaugeSVG(c.actFDP,c.redLimit,c.fdpOk,false)+
@@ -527,7 +544,7 @@ function render(){
 
   }else{
     const c=calcNorm();
-    o+='<div class="subtabs"><button class="subtab'+(nView==='simple'?' on':'')+'" data-nview="simple">'+T.viewSimple+'</button><button class="subtab'+(nView==='advanced'?' on':'')+'" data-nview="advanced">'+T.viewAdvanced+'</button></div>';
+    o+='<div class="subtabs" role="group"><button class="subtab'+(nView==='simple'?' on':'')+'" data-nview="simple" aria-pressed="'+(nView==='simple'?'true':'false')+'">'+T.viewSimple+'</button><button class="subtab'+(nView==='advanced'?' on':'')+'" data-nview="advanced" aria-pressed="'+(nView==='advanced'?'true':'false')+'">'+T.viewAdvanced+'</button></div>';
 
     if(nView==='simple'){
       const sbase=lT2(N.report,N.sectors);const soff=tm(N.report)+sbase;
@@ -577,19 +594,19 @@ function render(){
       // Disruptive
       const isD=c.dis.early||c.dis.late||c.dis.night;
       const disHid='h'+(_hid++);
-      o+='<div class="disrupt"><div class="disrupt-title" style="display:flex;align-items:center;justify-content:space-between">'+T.disruptiveTitle+'<span class="info-i" onclick="togHint(\''+disHid+'\',this)">i</span></div>';
+      o+='<div class="disrupt"><div class="disrupt-title" style="display:flex;align-items:center;justify-content:space-between">'+T.disruptiveTitle+'<button type="button" class="info-i" aria-expanded="false" aria-label="More info" onclick="togHint(\''+disHid+'\',this)">i</button></div>';
       o+='<div class="hint-box" id="'+disHid+'">'+T.disruptiveHint+'</div>';
       o+='<span class="tag '+(c.dis.early?'on':'off')+'">'+T.earlyStart+'</span>';
       o+='<span class="tag '+(c.dis.late?'on':'off')+'">'+T.lateFinish+'</span>';
       o+='<span class="tag '+(c.dis.night?'on':'off')+'">'+T.nightDuty+'</span>';
       const lnHid='h'+(_hid++);
-      o+='<div style="margin-top:9px;font-size:13px;color:var(--text-2);display:flex;align-items:center">'+T.localNights+' ('+N.postRest+'h): <b style="color:var(--gold-bright);margin-left:5px">'+c.pn+'</b><span class="info-i" onclick="togHint(\''+lnHid+'\',this)">i</span></div>';
+      o+='<div style="margin-top:9px;font-size:13px;color:var(--text-2);display:flex;align-items:center">'+T.localNights+' ('+N.postRest+'h): <b style="color:var(--gold-bright);margin-left:5px">'+c.pn+'</b><button type="button" class="info-i" aria-expanded="false" aria-label="More info" onclick="togHint(\''+lnHid+'\',this)">i</button></div>';
       o+='<div class="hint-box" id="'+lnHid+'">'+T.localNightsHint+'</div>';
       if(c.tzHomeApplies){
         o+='<div style="margin-top:6px;font-size:12px;color:'+(c.tzHomeOk?'var(--green)':'var(--red)')+'">'+(c.tzHomeOk?T.tzHomeOk:T.tzHomeFail)+' ('+T.minRestReq+' '+c.tzHomeReq+')</div>';
       }
       const neHid='h'+(_hid++);
-      o+='<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--edge-2)"><div class="tgl" data-tgl="nNextEarly"><div class="tgl-box'+(N.nextEarly?' on':'')+'"><div class="tgl-dot"></div></div><span class="tgl-label">'+T.nextEarlyLabel+'</span><span class="info-i" onclick="event.stopPropagation();togHint(\''+neHid+'\',this)">i</span></div><div class="hint-box" id="'+neHid+'">'+T.nextEarlyHint+'</div></div>';
+      o+='<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--edge-2)"><div style="display:flex;align-items:center;gap:13px"><button type="button" class="tgl" data-tgl="nNextEarly" aria-pressed="'+(N.nextEarly?'true':'false')+'" style="flex:1"><span class="tgl-box'+(N.nextEarly?' on':'')+'" aria-hidden="true"><span class="tgl-dot"></span></span><span class="tgl-label">'+T.nextEarlyLabel+'</span></button><button type="button" class="info-i" aria-expanded="false" aria-label="More info" onclick="event.stopPropagation();togHint(\''+neHid+'\',this)">i</button></div><div class="hint-box" id="'+neHid+'">'+T.nextEarlyHint+'</div></div>';
       if(c.transitionApplies){
         o+='<div style="margin-top:6px;font-size:12px;color:'+(c.transitionOk?'var(--green)':'var(--red)')+'">'+(c.transitionOk?T.transitionOk:T.transitionFail)+'</div>';
       }
@@ -619,7 +636,7 @@ function render(){
       // Hero verdict (top, most prominent)
       const allOk=c.fdpOk&&c.rOk&&c.destRestOk&&c.tzHomeOk&&c.transitionOk;
       const fails=[!c.fdpOk&&T.fdpOverLimit,!c.rOk&&T.restUnderMin,!c.destRestOk&&T.destRestOverLimit,!c.tzHomeOk&&T.tzHomeFail,!c.transitionOk&&T.transitionFail].filter(Boolean).join('. ');
-      o+='<div class="hero '+(allOk?'ok':'fail')+'"><div class="hero-icon">'+(allOk?'✓':'✕')+'</div><div class="hero-title">'+(allOk?T.legalLabel:T.illegalLabel)+'</div>'+(!allOk?'<div class="hero-sub">'+fails+'</div>':'<div class="hero-sub">'+T.normVerdictOk+'</div>')+'</div>';
+      o+='<div class="hero '+(allOk?'ok':'fail')+'" role="status" aria-live="polite"><div class="hero-icon" aria-hidden="true">'+(allOk?'✓':'✕')+'</div><div class="hero-title">'+(allOk?T.legalLabel:T.illegalLabel)+'</div>'+(!allOk?'<div class="hero-sub">'+fails+'</div>':'<div class="hero-sub">'+T.normVerdictOk+'</div>')+'</div>';
 
       // Gauge
       o+='<div class="card gauge-card">'+gaugeSVG(c.act,c.lim,c.fdpOk,c.fdpOk&&(c.lim-c.act)<30)+
@@ -654,9 +671,26 @@ function bind(){
   document.querySelectorAll('[data-nview]').forEach(b=>b.addEventListener('click',()=>{nView=b.dataset.nview;render()}));
   document.querySelectorAll('[data-acc]').forEach(b=>b.addEventListener('click',()=>togAcc(b.dataset.acc)));
   const sMap={sbyType:[S,'sbyType'],sbyStart:[S,'sbyStart'],sbyEnd:[S,'sbyEnd'],callTime:[S,'callTime'],reportTime:[S,'reportTime'],offTime:[S,'offTime'],sectors:[S,'sectors','int'],sBreakH:[S,'breakH','float'],sBreakStart:[S,'breakStart']};
-  Object.entries(sMap).forEach(([id,[obj,key,type]])=>{const el=$(id);if(el)el.addEventListener('change',()=>{obj[key]=type==='int'?+el.value:type==='float'?+el.value:el.value;render()})});
+function validateField(el){
+  if(el.type==='time'){
+    const ok=/^\d{2}:\d{2}$/.test(el.value);
+    el.classList.toggle('invalid',!ok);
+    return ok;
+  }
+  if(el.type==='number'){
+    const v=parseFloat(el.value);
+    const min=el.min!==''?parseFloat(el.min):-Infinity;
+    const max=el.max!==''?parseFloat(el.max):Infinity;
+    const ok=Number.isFinite(v)&&v>=min&&v<=max;
+    el.classList.toggle('invalid',!ok);
+    return ok;
+  }
+  return true;
+}
+function numVal(el){const v=el.type==='number'?parseFloat(el.value):+el.value;return Number.isFinite(v)?v:0}
+  Object.entries(sMap).forEach(([id,[obj,key,type]])=>{const el=$(id);if(el){validateField(el);el.addEventListener('input',()=>validateField(el));el.addEventListener('change',()=>{validateField(el);obj[key]=type==='int'||type==='float'?numVal(el):(el.value||'00:00');render()})}});
   const nMap={nReport:[N,'report'],nOff:[N,'off'],nSectors:[N,'sectors','int'],nTz:[N,'tz','int'],nHrs:[N,'hrs','int'],nRestFac:[N,'restFac'],nExtraCrew:[N,'extraCrew','int'],nBreakH:[N,'breakH','float'],nBreakStart:[N,'breakStart'],nPrevRest:[N,'prevRest','float'],nPrevDuty:[N,'prevDuty','float'],nPostRest:[N,'postRest','float']};
-  Object.entries(nMap).forEach(([id,[obj,key,type]])=>{const el=$(id);if(el)el.addEventListener('change',()=>{obj[key]=type==='int'?+el.value:type==='float'?+el.value:el.value;render()})});
+  Object.entries(nMap).forEach(([id,[obj,key,type]])=>{const el=$(id);if(el){validateField(el);el.addEventListener('input',()=>validateField(el));el.addEventListener('change',()=>{validateField(el);obj[key]=type==='int'||type==='float'?numVal(el):(el.value||'00:00');render()})}});
   document.querySelectorAll('[data-tgl]').forEach(el=>{el.addEventListener('click',()=>{
     const k=el.dataset.tgl;
     if(k==='isCalled')S.isCalled=!S.isCalled;
